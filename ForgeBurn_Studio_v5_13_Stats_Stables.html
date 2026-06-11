@@ -1,0 +1,3912 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ForgeBurn Studio v5.10 ZoomFix</title>
+<style>
+:root{--bg:#05070b;--panel:#0d1420;--panel2:#121d2c;--text:#eef7ff;--muted:#91a6bf;--line:#263a55;--cyan:#00d9ff;--mint:#8affd2;--orange:#ff9d42;--red:#ff4f6d}
+*{box-sizing:border-box} html,body{margin:0;height:100%;overflow:hidden;background:radial-gradient(circle at top,#14263b 0,#05070b 55%,#020306 100%);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+.app{height:100vh;display:grid;grid-template-rows:74px 1fr}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:0 16px;background:linear-gradient(90deg,#070a0f,#101a29 55%,#071019);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:14px;font-weight:950}.logo{width:58px;height:58px;border-radius:17px;background:linear-gradient(145deg,#0a111b,#16283d);border:1px solid rgba(138,255,210,.35);display:flex;align-items:center;justify-content:center;box-shadow:0 0 34px rgba(0,217,255,.35)}
+.logo svg{width:44px;height:44px;filter:drop-shadow(0 0 8px rgba(0,217,255,.45))}
+.brandText span{font-size:25px;letter-spacing:1.8px;font-weight:1000;background:linear-gradient(180deg,#fff,#c7d8ff 52%,#6f86a8);-webkit-background-clip:text;color:transparent}
+.brandText b{margin-left:8px;font-size:18px;letter-spacing:2px;color:var(--mint)}.brandText small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+button,.btn{border:0;border-radius:11px;padding:10px 13px;background:linear-gradient(135deg,var(--cyan),var(--mint));color:#001018;font-weight:950;cursor:pointer;font-size:13px;text-align:center}
+button.secondary{background:#182438;color:var(--text);border:1px solid var(--line)}button.hot{background:linear-gradient(135deg,var(--orange),#ffcf68)}
+.main{height:100%;min-height:0;display:grid;grid-template-columns:320px 1fr 390px;gap:10px;padding:10px}
+.panel{background:rgba(13,20,32,.96);border:1px solid var(--line);border-radius:18px;min-height:0;overflow:auto;box-shadow:0 18px 60px #0007}.left,.right{padding:12px}
+.center{padding:10px;display:grid;grid-template-rows:auto 1fr auto;gap:10px;overflow:hidden}.upload{border:2px dashed #355376;border-radius:16px;padding:16px;text-align:center;background:#0b1420;margin-bottom:12px}
+.upload strong{display:block;font-size:19px;margin-bottom:6px}.upload p{margin:0 0 12px;color:var(--muted);font-size:12px}input[type=file]{display:none}
+.heroCard{background:radial-gradient(circle at 10% 0%,rgba(255,157,66,.16),transparent 32%),radial-gradient(circle at 90% 10%,rgba(0,217,255,.18),transparent 34%),linear-gradient(145deg,#0b121d,#16263a);border:1px solid rgba(138,255,210,.28);border-radius:20px;padding:14px;margin-bottom:12px}.heroTitle{font-size:22px;font-weight:1000;background:linear-gradient(180deg,#fff,#b9ffef 50%,#00d9ff);-webkit-background-clip:text;color:transparent}
+.heroSub,.note{color:var(--muted);font-size:12px;line-height:1.35}.section{margin:14px 0 8px;color:var(--mint);font-size:12px;text-transform:uppercase;font-weight:950;letter-spacing:.9px}
+.pills{display:flex;gap:7px;flex-wrap:wrap}.pill,.modeBtn{border:1px solid var(--line);background:#09101a;color:var(--muted);border-radius:999px;padding:8px 10px;font-size:12px;cursor:pointer;user-select:none}
+.modeGrid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.modeBtn{border-radius:11px;text-align:center;padding:10px}.pill.active,.modeBtn.active{background:linear-gradient(135deg,var(--cyan),var(--mint));color:#001018;border-color:transparent;font-weight:950}
+.row{margin:10px 0}.row label,.mini label{display:flex;justify-content:space-between;gap:8px;color:#dcecff;font-size:12px;margin-bottom:6px}.value{color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--cyan)}input[type=number],select{width:100%;background:#09101a;border:1px solid var(--line);border-radius:11px;color:var(--text);padding:10px}
+.check{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;margin:10px 0;color:#dcecff;font-size:13px}.toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.group{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.previewArea{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0}.canvasBox{display:grid;grid-template-rows:35px 1fr;background:#080d14;border:1px solid var(--line);border-radius:15px;overflow:hidden;min-height:0}
+.canvasTitle{display:flex;justify-content:space-between;align-items:center;padding:0 10px;color:var(--muted);font-size:12px;border-bottom:1px solid var(--line)}.canvasHolder{min-height:0;overflow:auto;display:block;padding:140px;cursor:grab;background:#0c1420;position:relative}
+canvas{background:white;max-width:none;max-height:none;box-shadow:0 10px 42px #0009;display:block;margin:0 auto}.live{background:#0b121d;border:1px solid var(--line);border-radius:15px;padding:10px}.liveGrid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.stat{display:grid;grid-template-columns:1fr auto;gap:8px;border-bottom:1px solid #223149;padding:7px 0;color:var(--muted);font-size:12px}.stat strong{color:#dcecff}
+.ditherBox{margin-top:12px;padding:14px;border:1px solid rgba(0,217,255,.28);border-radius:18px;background:linear-gradient(180deg,rgba(0,217,255,.08),rgba(5,12,20,.7))}
+.ditherBoxHead{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:950;color:#8affd2;margin-bottom:8px}.ditherBox small{display:block;color:#91a6bf;line-height:1.35;margin-bottom:10px}.ditherAdvanced.hidden{display:none}
+.ditherMiniGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.ditherPreset{border:1px solid #263a55;background:#09101a;color:#dcecff;border-radius:11px;padding:10px;font-size:12px;font-weight:950}.ditherPreset.active{background:linear-gradient(135deg,#00d9ff,#8affd2);color:#001018}
+.modalOverlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);padding:24px}.modalOverlay.show{display:flex}.modal{width:min(1500px,96vw);height:min(900px,92vh);margin:auto;background:linear-gradient(180deg,#111b2a,#070d15);border:1px solid var(--line);border-radius:22px;display:grid;grid-template-rows:58px 1fr;overflow:hidden}.modalHead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;border-bottom:1px solid var(--line)}.modalGrid{padding:12px;overflow:auto;display:grid;grid-template-columns:repeat(3,minmax(260px,1fr));gap:12px}.modalCard{background:#08101a;border:1px solid var(--line);border-radius:15px;overflow:hidden;display:grid;grid-template-rows:38px 1fr auto;min-height:330px}.modalCardTitle{padding:10px;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px;display:flex;justify-content:space-between}.modalCardCanvas{min-height:240px;display:flex;align-items:center;justify-content:center;overflow:auto;padding:10px;background:#0c1420}.modalCard canvas{max-width:100%;max-height:420px;box-shadow:none}.modalCard button{margin:10px}
+.projectItem{display:grid;grid-template-columns:48px 1fr auto;gap:8px;align-items:center;background:#09101a;border:1px solid var(--line);border-radius:12px;padding:6px}.projectThumb{width:48px;height:48px;object-fit:cover;border-radius:8px;background:#fff}.projectName{font-size:12px;color:#dcecff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:1250px){.main{grid-template-columns:300px 1fr}.right{grid-column:1/3;max-height:310px}.liveGrid{grid-template-columns:repeat(3,1fr)}}@media(max-width:880px){html,body{overflow:auto}.app{height:auto;min-height:100vh}.main{grid-template-columns:1fr}.right{grid-column:auto;max-height:none}.previewArea{grid-template-columns:1fr}.liveGrid{grid-template-columns:1fr 1fr}.modalGrid{grid-template-columns:1fr}}
+</style>
+
+<style>
+.canvasTitle .group{gap:5px;align-items:center}
+.canvasTitle button.secondary{
+  padding:4px 7px;
+  border-radius:7px;
+  font-size:11px;
+}
+</style>
+
+
+<style>
+.proOverlayCanvas{
+  position:absolute;
+  left:140px;
+  top:140px;
+  pointer-events:none;
+  mix-blend-mode:multiply;
+  opacity:.72;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+.loupeBox{
+  display:none;
+  position:fixed;
+  z-index:3000;
+  width:260px;
+  height:180px;
+  border:2px solid #00d9ff;
+  border-radius:16px;
+  background:#071019;
+  box-shadow:0 20px 80px #000b;
+  overflow:hidden;
+  pointer-events:none;
+}
+.loupeBox.show{display:block}
+.loupeHead{
+  height:24px;
+  padding:4px 8px;
+  font-size:11px;
+  font-weight:950;
+  color:#8affd2;
+  background:#0d1420;
+  border-bottom:1px solid #263a55;
+}
+.loupeCanvases{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  height:156px;
+}
+.loupeCanvases canvas{
+  width:130px;
+  height:156px;
+  box-shadow:none!important;
+  margin:0!important;
+  background:white;
+}
+</style>
+
+
+<style>
+.clogCard{
+  border:1px solid #263a55;
+  background:#08101a;
+  border-radius:14px;
+  padding:12px;
+}
+.clogCard strong{color:#8affd2}
+.clogMeter{
+  height:10px;
+  background:#101a29;
+  border-radius:99px;
+  overflow:hidden;
+  margin-top:8px;
+}
+.clogMeter span{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,#8affd2,#ffcf68,#ff4f6d);
+}
+</style>
+
+
+<style>
+.proToolsPanel{
+  display:none;
+  margin:8px 0 0;
+  padding:10px;
+  border:1px solid #263a55;
+  border-radius:14px;
+  background:rgba(8,16,26,.92);
+}
+.proToolsPanel.show{display:block}
+.proToolsGrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(130px,1fr));
+  gap:8px;
+}
+.proToolsGrid button{
+  width:100%;
+}
+.mainActionHint{
+  color:#91a6bf;
+  font-size:12px;
+}
+@media(max-width:900px){.proToolsGrid{grid-template-columns:1fr 1fr}}
+</style>
+
+
+<style>
+/* v5.11 UI propre: aucun doublon visuel; les anciens boutons restent cachés seulement pour compatibilité JS. */
+#styleModes[aria-hidden="true"], .ui-hidden-compat{display:none!important}
+#proToolsPanel.show{display:block}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div class="brand"><div class="logo"><svg viewBox="0 0 100 100"><defs><linearGradient id="metal" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#8affd2"/><stop offset="1" stop-color="#00d9ff"/></linearGradient><linearGradient id="fire" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ffd36a"/><stop offset=".5" stop-color="#ff8b2a"/><stop offset="1" stop-color="#ff3d3d"/></linearGradient></defs><path d="M18 72 L50 14 L82 72 Z" fill="none" stroke="url(#metal)" stroke-width="8" stroke-linejoin="round"/><path d="M25 72 H75" stroke="#f8fbff" stroke-width="8" stroke-linecap="round"/><path d="M50 24 C43 37 57 40 47 53 C42 59 45 68 53 69 C66 68 69 54 60 45 C57 52 52 45 55 38 C50 42 47 35 50 24Z" fill="url(#fire)"/><path d="M10 22 L90 78" stroke="#00d9ff" stroke-width="5" stroke-linecap="round"/><circle cx="10" cy="22" r="6" fill="#8affd2"/></svg></div><div class="brandText"><span>FORGEBURN</span><b>STUDIO</b><small>Laser Rendering • v5.11 UI Propre</small></div></div>
+<div class="group"><button class="secondary" id="fsBtn">Plein écran</button><button class="hot" id="forgeBtn">Auto Optimize</button><button id="exportBtn">Export PNG</button></div>
+</header>
+
+<div class="main">
+<aside class="panel left">
+<div class="upload" id="drop"><strong>Ajouter image</strong><p>PNG / JPG / WEBP — ajoute sans remplacer le projet</p><button class="btn" id="chooseFileBtn" type="button">Choisir une image</button><input type="file" id="fileInput" accept="image/*"><div class="note" id="fileInfo" style="margin-top:10px">Aucune image chargée.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="secondary" id="resetImageBtn" type="button">💥 Reset Projet</button><button class="secondary" id="resetZonesBtn" type="button">🔄 Reset Zones</button></div><div class="section">Projet Images</div><div id="projectImages" style="display:flex;flex-direction:column;gap:6px;max-height:190px;overflow:auto"></div></div>
+<div class="heroCard"><div class="heroTitle">FORGEBURN</div><div class="heroSub">Préparation image pensée pour une vraie gravure laser.</div></div>
+
+<div class="section">Matériaux</div>
+<div class="pills" id="materialPills">
+<div class="pill active" data-material="basswood">Tilleul</div><div class="pill" data-material="birchply">Plywood bouleau</div><div class="pill" data-material="maple">Érable</div><div class="pill" data-material="oak">Chêne</div><div class="pill" data-material="pine">Pin</div><div class="pill" data-material="darkwood">Bois foncé</div><div class="pill" data-material="slate">Ardoise</div><div class="pill" data-material="leather">Cuir</div><div class="pill" data-material="glass">Verre</div><div class="pill" data-material="metal">Métal peint</div>
+</div>
+
+<div style="display:none" aria-hidden="true"><div class="section">Style rendu</div>
+<div class="modeGrid" id="styleModes"><div class="modeBtn active" data-mode="photo">Photo laser</div><div class="modeBtn" data-mode="ultradetail">Ultra détail</div><div class="modeBtn" data-mode="portrait">Portrait</div><div class="modeBtn" data-mode="sketch">Esquisse</div><div class="modeBtn" data-mode="lineart">Points → lignes</div><div class="modeBtn" data-mode="hatching">Hachures</div><div class="modeBtn" data-mode="outline">Contour</div><div class="modeBtn" data-mode="stamp">Tampon</div></div></div>
+
+<div class="section">Sortie</div>
+<div class="row"><label>Largeur finale <span class="value">pouces</span></label><input id="inchWidth" type="number" min=".5" max="60" step=".1" value="5"></div>
+<div class="row"><label>DPI export <span class="value">600 défaut</span></label><select id="dpi"><option value="600" selected>600 DPI — qualité max</option><option value="1200">1200 DPI — très fin</option><option value="2400">2400 DPI — extrême</option></select></div>
+<div class="check"><input id="fitExport" type="checkbox" checked><label for="fitExport">Exporter selon largeur/DPI</label></div>
+<div class="check"><input id="maxQuality" type="checkbox" checked><label for="maxQuality">Qualité maximale toujours active</label></div>
+<div class="check"><input id="mirror" type="checkbox"><label for="mirror">Miroir horizontal</label></div>
+<div class="check"><input id="invert" type="checkbox"><label for="invert">Inverser noir/blanc</label></div>
+</aside>
+
+<main class="panel center">
+<div class="toolbar"><div class="group">
+      <button class="secondary" id="compareBtn">Comparateur</button>
+      <span style="display:none" aria-hidden="true"><button id="zoomOutBtn">− Zoom résultat</button><button id="zoomFitBtn">Reset résultat</button><button id="zoomInBtn">+ Zoom résultat</button><input id="syncZoom" type="checkbox"><button id="proToolsToggleBtn">Outils Pro</button><button id="forgeBtn2">Auto Optimize</button><button id="exportBtn2">Export</button></span>
+    </div><div class="note" id="status">Charge une image pour commencer.</div><div class="note">Actions globales : en haut à droite</div></div>
+<div class="previewArea">
+<div class="canvasBox"><div class="canvasTitle"><span>Original (Zoom <b id="zoomInfo1">100%</b>)</span><span class="group"><button class="secondary" id="origZoomOutBtn" type="button">−</button><button class="secondary" id="origZoomResetBtn" type="button">100%</button><button class="secondary" id="origZoomInBtn" type="button">+</button><span id="origSize">—</span></span></div><div class="canvasHolder"><canvas id="originalCanvas"></canvas></div></div>
+<div class="canvasBox"><div class="canvasTitle"><span>Résultat ForgeBurn (Zoom <b id="zoomInfo2">100%</b>)</span><span class="group"><button class="secondary" id="procZoomOutBtn" type="button">−</button><button class="secondary" id="procZoomResetBtn" type="button">100%</button><button class="secondary" id="procZoomInBtn" type="button">+</button><span id="outSize">—</span></span></div><div class="canvasHolder"><canvas id="processedCanvas"></canvas></div></div>
+</div>
+<div class="live"><div class="liveGrid">
+<div class="mini"><label>Luminosité <span id="brightnessVal" class="value">8</span></label><input id="brightness" type="range" min="-100" max="100" value="8"></div>
+<div class="mini"><label>Contraste <span id="contrastVal" class="value">32</span></label><input id="contrast" type="range" min="-100" max="150" value="32"></div>
+<div class="mini"><label>Gamma <span id="gammaVal" class="value">1.25</span></label><input id="gamma" type="range" min="35" max="260" value="125"></div>
+<div class="mini"><label>Netteté <span id="sharpenVal" class="value">24</span></label><input id="sharpen" type="range" min="0" max="120" value="24"></div>
+<div class="mini"><label>Seuil <span id="thresholdVal" class="value">158</span></label><input id="threshold" type="range" min="0" max="255" value="158"></div>
+<div class="mini"><label>Clarté <span id="clarityVal" class="value">20</span></label><input id="clarity" type="range" min="0" max="100" value="20"></div>
+</div></div>
+</main>
+
+<aside class="panel right">
+<div class="section">🎨 Moteur de Traitement</div>
+<div class="modeGrid" id="processingPresets">
+<div class="modeBtn active" data-preset="default">Standard</div>
+<div class="modeBtn" data-preset="photo">Photo laser</div>
+<div class="modeBtn" data-preset="portrait">Portrait</div>
+<div class="modeBtn" data-preset="logo">Logo / Texte</div>
+<div class="modeBtn" data-preset="sketch">Esquisse</div>
+<div class="modeBtn" data-preset="lineart">Contour propre</div>
+<div class="modeBtn" data-preset="deepblack">Noir profond</div>
+<div class="modeBtn" data-preset="softwood">Bois clair</div>
+</div>
+
+<div class="section">Moteur de rendu</div>
+<select id="dither"><option value="jarvisBright">Dithering — Jarvis Bright</option><option value="jarvisSoft">Dithering — Jarvis Soft</option><option value="sierra">Dithering — Sierra</option><option value="burkes">Dithering — Burkes</option><option value="stucki">Dithering — Stucki</option><option value="lineConnect">Points → lignes</option><option value="engraveLines">Hachures</option><option value="crossHatch">Cross Hatch</option><option value="threshold">Noir/blanc</option><option value="grayscale">Grayscale</option></select>
+
+<div class="ditherBox" id="ditherOptionsBox"><div class="ditherBoxHead"><span>🔥 Options Dithering</span><label style="font-size:12px;color:#dcecff;display:flex;gap:6px;align-items:center"><input id="ditherOptionsActive" type="checkbox"> actif</label></div><small>Contrôle les points laser : densité, espacement, ombres et zones pâles.</small>
+<div class="ditherMiniGrid"><button class="ditherPreset active" type="button" data-dither-preset="safe">Bois safe</button><button class="ditherPreset" type="button" data-dither-preset="balanced">Balance</button><button class="ditherPreset" type="button" data-dither-preset="detail">Max détails</button><button class="ditherPreset" type="button" data-dither-preset="portrait">Portrait</button></div>
+<div class="ditherAdvanced" id="ditherAdvancedPanel">
+<div class="row"><label>Points par pouce <span id="ditherPpiVal" class="value">95</span></label><input id="ditherPpi" type="range" min="40" max="220" value="95"></div>
+<div class="row"><label>Force dithering <span id="ditherForceVal" class="value">45</span></label><input id="ditherForce" type="range" min="0" max="100" value="45"></div>
+<div class="row"><label>Espacement global points <span id="globalSpacingVal" class="value">45</span></label><input id="globalDotSpacing" type="range" min="0" max="100" value="45"></div>
+<div class="row"><label>Respect densité ombres <span id="shadowDensityVal" class="value">82</span></label><input id="shadowDensity" type="range" min="0" max="100" value="82"></div>
+<div class="row"><label>Dispersion zones pâles <span id="lightScatterVal" class="value">68</span></label><input id="lightScatter" type="range" min="0" max="100" value="68"></div>
+<div class="row"><label>Anti-bouchage foncé <span id="antiClogVal" class="value">25</span></label><input id="antiClog" type="range" min="0" max="100" value="25"></div>
+<div class="row"><label>Noir profond <span id="deepBlackVal" class="value">72</span></label><input id="deepBlack" type="range" min="0" max="100" value="72"></div>
+<div class="row"><label>Nettoyage zones claires <span id="lightCleanVal" class="value">62</span></label><input id="lightClean" type="range" min="0" max="100" value="62"></div>
+</div></div>
+
+<div class="section">Material-Aware Engine</div>
+<div class="row"><label>Récupérer ombres <span id="shadowVal" class="value">52</span></label><input id="shadowLift" type="range" min="0" max="100" value="52"></div>
+<div class="row"><label>Protéger blancs <span id="highlightVal" class="value">25</span></label><input id="highlightProtect" type="range" min="0" max="100" value="25"></div>
+<div class="row"><label>Balance laser <span id="laserVal" class="value">68</span></label><input id="laserBalance" type="range" min="0" max="100" value="68"></div>
+<div class="row"><label>Réduction fond <span id="bgVal" class="value">18</span></label><input id="bgReduce" type="range" min="0" max="100" value="18"></div>
+<div class="row"><label>Nettoyage points <span id="cleanVal" class="value">25</span></label><input id="cleanup" type="range" min="0" max="100" value="25"></div>
+<div class="row"><label>Compensation matériau <span id="materialCompVal" class="value">70</span></label><input id="materialComp" type="range" min="0" max="100" value="70"></div>
+<div class="row"><label>Compensation grain <span id="grainCompVal" class="value">35</span></label><input id="grainComp" type="range" min="0" max="100" value="35"></div>
+<div class="row"><label>Perte laser <span id="dotLossVal" class="value">25</span></label><input id="dotLoss" type="range" min="0" max="100" value="25"></div>
+<div class="section">Lignes</div>
+<div class="row"><label>Épaisseur contour <span id="edgeVal" class="value">35</span></label><input id="edge" type="range" min="0" max="100" value="35"></div>
+<div class="row"><label>Espacement lignes <span id="lineSpacingVal" class="value">7</span></label><input id="lineSpacing" type="range" min="3" max="18" value="7"></div>
+<div class="row"><label>Connexion points <span id="connectVal" class="value">55</span></label><input id="connectStrength" type="range" min="0" max="100" value="55"></div>
+<div class="row"><label>Angle lignes <span id="angleVal" class="value">0</span></label><input id="lineAngle" type="range" min="-45" max="45" value="0"></div>
+
+<div class="section">🧠 Analyse Pro</div>
+<div class="proToolsPanel show" id="proToolsPanel">
+  <div class="proToolsGrid">
+    <button class="secondary" id="loupeBtn" type="button">Loupe laser</button>
+    <button class="secondary" id="zoneBtn" type="button">Atelier zones</button>
+    <button class="hot" id="forgeAiBtn" type="button">Optimisation Pro</button>
+  </div>
+  <div class="mainActionHint" style="margin-top:8px">Les overlays sont juste en dessous. Les actions globales Export/Auto Optimize restent en haut.</div>
+</div>
+<div class="stat"><span>Type détecté</span><strong id="aiType">—</strong></div>
+<div class="stat"><span>Risque bouchage</span><strong id="clogRisk">—</strong></div>
+<div class="stat"><span>Zones trop pâles</span><strong id="paleRisk">—</strong></div>
+<div class="stat"><span>Recommandation</span><strong id="aiAdvice">—</strong></div><div class="stat"><span>Score gravabilité</span><strong id="engraveScore">—</strong></div><div class="stat"><span>Détails préservés</span><strong id="detailPreserve">—</strong></div>
+<div class="row"><label>Préserver détails <span id="detailProtectVal" class="value">85</span></label><input id="detailProtect" type="range" min="0" max="100" value="85"></div><div class="row"><label>Force correction douce <span id="smoothFixVal" class="value">42</span></label><input id="smoothFix" type="range" min="0" max="100" value="42"></div><div class="check"><input id="overlayHeatmap" type="checkbox"><label for="overlayHeatmap">Afficher heatmap laser</label></div>
+<div class="check"><input id="overlayClog" type="checkbox"><label for="overlayClog">Surligner zones bouchées</label></div><div class="check"><input id="overlayDetailMap" type="checkbox"><label for="overlayDetailMap">Carte détails perdus</label></div>
+<div class="check"><input id="overlayBurn" type="checkbox"><label for="overlayBurn">Simulation rendu gravé</label></div>
+<div class="section">Analyse</div><div class="stat"><span>Matériau</span><strong id="statMat">Tilleul</strong></div><div class="stat"><span>Mode</span><strong id="statMode">Photo laser</strong></div><div class="stat"><span>Export</span><strong id="statExport">—</strong></div><div class="stat"><span>Noir estimé</span><strong id="statBlack">—</strong></div><div class="stat"><span>Score rendu</span><strong id="statScore">—</strong></div>
+</aside>
+</div></div>
+
+<div class="modalOverlay" id="compareModal"><div class="modal"><div class="modalHead"><strong>Comparateur de rendus</strong><div class="group"><button class="secondary" id="refreshCompareBtn">Régénérer</button><button class="secondary" id="closeCompareBtn">Fermer</button></div></div><div class="modalGrid" id="compareModalGrid"></div></div></div>
+<div class="modalOverlay" id="zoneModal"><div class="modal"><div class="modalHead"><strong>🎯 Atelier Zones — retouche locale</strong><div class="group"><button class="secondary" id="zoneUndoBtn">Undo zone</button><button class="secondary" id="zoneResetBtn">Reset zones</button><button class="secondary" id="closeZoneBtn">Appliquer / Fermer</button></div></div><div style="display:grid;grid-template-columns:270px 1fr;gap:12px;padding:12px;min-height:0;overflow:hidden"><div class="panel left" style="padding:12px;overflow:auto"><div class="section">Outil</div><div class="modeGrid" id="zoneTools"><div class="modeBtn zoneTool active" data-zone-tool="erase">Effacer points</div><div class="modeBtn zoneTool" data-zone-tool="darken">Assombrir</div><div class="modeBtn zoneTool" data-zone-tool="lighten">Éclaircir</div><div class="modeBtn zoneTool" data-zone-tool="boost">Accentuer</div><div class="modeBtn zoneTool" data-zone-tool="clean">Nettoyer</div><div class="modeBtn zoneTool" data-zone-tool="detail">Densifier points</div><div class="modeBtn zoneTool" data-zone-tool="space">Espacer points</div></div><div class="section">Pinceau</div><div class="row"><label>Taille <span id="zoneBrushVal" class="value">36</span></label><input id="zoneBrush" type="range" min="4" max="160" value="36"></div><div class="row"><label>Force <span id="zonePowerVal" class="value">45</span></label><input id="zonePower" type="range" min="5" max="100" value="45"></div><div class="note">Dessine directement sur l'image. Les corrections restent locales.</div></div><div class="canvasBox" style="min-height:0"><div class="canvasTitle"><span>Résultat retouchable</span><span>glisse pour modifier</span></div><div class="canvasHolder" id="zoneHolder" style="touch-action:none"><canvas id="zoneCanvas"></canvas></div></div></div></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+let img=null, activeMaterial='basswood', activeMode='photo', zoomLevel=1, debounce=null, currentProjectIndex=-1, zoneAppliedImage=null;
+const fileInput=$('fileInput'), chooseFileBtn=$('chooseFileBtn'), drop=$('drop'), originalCanvas=$('originalCanvas'), processedCanvas=$('processedCanvas'), octx=originalCanvas.getContext('2d',{willReadFrequently:true}), pctx=processedCanvas.getContext('2d',{willReadFrequently:true});
+let projectImages=[];
+
+const controls=['brightness','contrast','gamma','sharpen','threshold','clarity','dither','invert','mirror','fitExport','maxQuality','inchWidth','dpi','shadowLift','highlightProtect','laserBalance','bgReduce','cleanup','materialComp','grainComp','dotLoss','edge','lineSpacing','connectStrength','lineAngle','ditherOptionsActive','ditherPpi','ditherForce','globalDotSpacing','shadowDensity','lightScatter','antiClog','deepBlack','lightClean','zoneBrush','zonePower'];
+controls.forEach(id=>{const el=$(id); if(el){el.addEventListener('input',schedule);el.addEventListener('change',schedule)}});
+
+function setv(id,v){const el=$(id); if(!el)return; if(el.type==='checkbox')el.checked=!!v; else el.value=v}
+function updateLabels(){const ids={brightness:'brightnessVal',contrast:'contrastVal',sharpen:'sharpenVal',threshold:'thresholdVal',clarity:'clarityVal',shadowLift:'shadowVal',highlightProtect:'highlightVal',laserBalance:'laserVal',bgReduce:'bgVal',cleanup:'cleanVal',materialComp:'materialCompVal',grainComp:'grainCompVal',dotLoss:'dotLossVal',edge:'edgeVal',lineSpacing:'lineSpacingVal',connectStrength:'connectVal',lineAngle:'angleVal',ditherPpi:'ditherPpiVal',ditherForce:'ditherForceVal',globalDotSpacing:'globalSpacingVal',shadowDensity:'shadowDensityVal',lightScatter:'lightScatterVal',antiClog:'antiClogVal',deepBlack:'deepBlackVal',lightClean:'lightCleanVal',zoneBrush:'zoneBrushVal',zonePower:'zonePowerVal'};for(const k in ids){if($(k)&&$(ids[k]))$(ids[k]).textContent=$(k).value} if($('gammaVal'))$('gammaVal').textContent=($('gamma').value/100).toFixed(2)}
+function schedule(){updateLabels();clearTimeout(debounce);debounce=setTimeout(()=>process(),50)}
+updateLabels();
+
+chooseFileBtn.onclick=()=>fileInput.click();
+fileInput.onchange=e=>{if(e.target.files&&e.target.files[0])handleFile(e.target.files[0])};
+drop.ondragover=e=>{e.preventDefault();drop.style.borderColor='#00d9ff'};drop.ondragleave=()=>drop.style.borderColor='#355376';drop.ondrop=e=>{e.preventDefault();drop.style.borderColor='#355376';if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])};
+
+function handleFile(file){
+ if(!file||!file.type.startsWith('image/')){alert('Choisis une image valide.');return}
+ const reader=new FileReader();
+ reader.onload=e=>{
+  const image=new Image();
+  image.onload=()=>{
+   projectImages.push({name:file.name,src:e.target.result,settings:captureSettings(),zones:null});
+   loadProject(projectImages.length-1);
+   refreshProjectList();
+  };
+  image.onerror=()=>alert('Impossible de lire cette image.');
+  image.src=e.target.result;
+ };
+ reader.readAsDataURL(file);
+}
+function captureSettings(){const obj={};controls.forEach(id=>{const e=$(id); if(e)obj[id]=e.type==='checkbox'?e.checked:e.value});obj.material=activeMaterial;obj.mode=activeMode;return obj}
+function applySettings(s){if(!s)return;for(const k in s){if($(k))setv(k,s[k])}activeMaterial=s.material||activeMaterial;activeMode=s.mode||activeMode;updateLabels()}
+function saveCurrentProject(){if(currentProjectIndex>=0&&projectImages[currentProjectIndex])projectImages[currentProjectIndex].settings=captureSettings()}
+function loadProject(i){
+ saveCurrentProject(); currentProjectIndex=i; const p=projectImages[i]; const im=new Image();
+ im.onload=()=>{img=im;originalCanvas.width=im.naturalWidth;originalCanvas.height=im.naturalHeight;octx.setTransform(1,0,0,1,0,0);octx.clearRect(0,0,originalCanvas.width,originalCanvas.height);octx.drawImage(im,0,0);$('fileInfo').textContent=p.name+' — '+im.naturalWidth+'×'+im.naturalHeight+' px';$('origSize').textContent=im.naturalWidth+'×'+im.naturalHeight+' px';applySettings(p.settings);zoneAppliedImage=p.zones;zoomLevel=1;process();applyZoom();$('status').textContent='Image chargée depuis le projet.';refreshProjectList()};
+ im.src=p.src;
+}
+function refreshProjectList(){const box=$('projectImages');box.innerHTML='';projectImages.forEach((p,i)=>{const d=document.createElement('div');d.className='projectItem';d.innerHTML='<img class="projectThumb" src="'+p.src+'"><div class="projectName">'+p.name+'</div><button class="secondary" type="button">Ouvrir</button>';d.querySelector('button').onclick=()=>loadProject(i);if(i===currentProjectIndex)d.style.borderColor='#00d9ff';box.appendChild(d)})}
+$('resetImageBtn').onclick=()=>{if(confirm('Réinitialiser complètement le projet?'))location.reload()};
+$('resetZonesBtn').onclick=()=>{zoneAppliedImage=null;if(currentProjectIndex>=0)projectImages[currentProjectIndex].zones=null;process();$('status').textContent='Zones réinitialisées.'};
+
+function applyZoom(){zoomLevel=Math.max(.1,Math.min(10,zoomLevel));[originalCanvas,processedCanvas].forEach(c=>{if(c.width&&c.height){c.style.width=Math.max(1,Math.round(c.width*zoomLevel))+'px';c.style.height=Math.max(1,Math.round(c.height*zoomLevel))+'px'}});$('zoomInfo1').textContent=Math.round(zoomLevel*100)+'%';$('zoomInfo2').textContent=Math.round(zoomLevel*100)+'%'}
+document.querySelectorAll('.canvasHolder').forEach(holder=>{holder.addEventListener('wheel',e=>{e.preventDefault();const rect=holder.getBoundingClientRect(),mx=e.clientX-rect.left+holder.scrollLeft,my=e.clientY-rect.top+holder.scrollTop,old=zoomLevel;zoomLevel=Math.max(.15,Math.min(8,zoomLevel*(e.deltaY<0?1.12:.89)));applyZoom();const ratio=zoomLevel/old;holder.scrollLeft=mx*ratio-(e.clientX-rect.left);holder.scrollTop=my*ratio-(e.clientY-rect.top)},{passive:false});let drag=false,sx=0,sy=0,sl=0,st=0;holder.addEventListener('mousedown',e=>{drag=true;sx=e.pageX;sy=e.pageY;sl=holder.scrollLeft;st=holder.scrollTop;e.preventDefault()});window.addEventListener('mouseup',()=>drag=false);holder.addEventListener('mousemove',e=>{if(!drag)return;holder.scrollLeft=sl-(e.pageX-sx);holder.scrollTop=st-(e.pageY-sy)})});
+$('zoomInBtn').onclick=()=>{zoomLevel*=1.2;applyZoom()};$('zoomOutBtn').onclick=()=>{zoomLevel*=.82;applyZoom()};$('zoomFitBtn').onclick=()=>{zoomLevel=1;applyZoom();document.querySelectorAll('.canvasHolder').forEach(h=>{h.scrollLeft=0;h.scrollTop=0})};
+
+document.querySelectorAll('#materialPills .pill').forEach(p=>p.onclick=()=>{document.querySelectorAll('#materialPills .pill').forEach(x=>x.classList.remove('active'));p.classList.add('active');activeMaterial=p.dataset.material;applyMaterial(activeMaterial);process()});
+document.querySelectorAll('#styleModes .modeBtn').forEach(b=>b.onclick=()=>{document.querySelectorAll('#styleModes .modeBtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeMode=b.dataset.mode;applyMode(activeMode);process()});
+document.querySelectorAll('#processingPresets .modeBtn').forEach(b=>b.onclick=()=>{document.querySelectorAll('#processingPresets .modeBtn').forEach(x=>x.classList.remove('active'));b.classList.add('active');applyProcessingPreset(b.dataset.preset);process()});
+document.querySelectorAll('[data-dither-preset]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('[data-dither-preset]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const p=btn.dataset.ditherPreset;if(p==='safe')setMany({ditherPpi:90,ditherForce:42,globalDotSpacing:55,shadowDensity:84,lightScatter:72,antiClog:22,deepBlack:75,lightClean:68});if(p==='balanced')setMany({ditherPpi:105,ditherForce:50,globalDotSpacing:42,shadowDensity:80,lightScatter:60,antiClog:28,deepBlack:68,lightClean:55});if(p==='detail')setMany({ditherPpi:130,ditherForce:62,globalDotSpacing:25,shadowDensity:88,lightScatter:42,antiClog:18,deepBlack:72,lightClean:42});if(p==='portrait')setMany({ditherPpi:95,ditherForce:38,globalDotSpacing:38,shadowDensity:72,lightScatter:75,antiClog:35,deepBlack:58,lightClean:70});process()});
+$('ditherOptionsActive').onchange=()=>{$('ditherAdvancedPanel').classList.toggle('hidden',!$('ditherOptionsActive').checked);process()};
+
+function setMany(o){Object.entries(o).forEach(([k,v])=>setv(k,v));updateLabels()}
+function applyMaterial(m){const p={basswood:{brightness:10,contrast:32,gamma:125,threshold:158,shadowLift:52,laserBalance:68,dither:'jarvisBright',invert:false,materialComp:72,grainComp:28,dotLoss:22},birchply:{brightness:16,contrast:38,gamma:132,threshold:168,shadowLift:68,laserBalance:76,dither:'jarvisBright',materialComp:88,grainComp:58,dotLoss:44},maple:{brightness:12,contrast:30,gamma:128,threshold:162,shadowLift:55,laserBalance:70,dither:'jarvisBright',materialComp:78,grainComp:32,dotLoss:25},oak:{brightness:18,contrast:42,gamma:136,threshold:172,shadowLift:75,laserBalance:80,dither:'jarvisBright',materialComp:95,grainComp:78,dotLoss:55},pine:{brightness:18,contrast:34,gamma:138,threshold:174,shadowLift:72,laserBalance:82,dither:'sierra',materialComp:96,grainComp:82,dotLoss:60},darkwood:{brightness:18,contrast:42,gamma:130,threshold:162,shadowLift:74,laserBalance:72,dither:'jarvisSoft',materialComp:90,grainComp:44,dotLoss:42},slate:{brightness:4,contrast:42,gamma:112,threshold:145,shadowLift:42,laserBalance:58,dither:'sierra',invert:true,materialComp:65,grainComp:0,dotLoss:15},leather:{brightness:14,contrast:28,gamma:120,threshold:152,shadowLift:46,laserBalance:60,dither:'sierra',materialComp:76,grainComp:35,dotLoss:38},glass:{brightness:10,contrast:55,gamma:105,threshold:138,shadowLift:35,laserBalance:55,dither:'threshold',invert:true,materialComp:70,grainComp:0,dotLoss:20},metal:{brightness:8,contrast:70,gamma:100,threshold:135,shadowLift:25,laserBalance:52,dither:'threshold',invert:true,materialComp:55,grainComp:0,dotLoss:12}}[m];setMany(p||{});updateStats()}
+function applyMode(m){const p={photo:{dither:'jarvisBright',clarity:20,sharpen:24},ultradetail:{dither:'burkes',clarity:32,sharpen:32,threshold:162},portrait:{dither:'sierra',clarity:12,sharpen:16,threshold:166},sketch:{dither:'threshold',clarity:70,sharpen:70,threshold:165},lineart:{dither:'lineConnect',clarity:55,sharpen:42,threshold:150,lineSpacing:6,connectStrength:72},hatching:{dither:'engraveLines',clarity:40,sharpen:30,threshold:145,lineSpacing:7,lineAngle:-18},outline:{dither:'threshold',clarity:90,sharpen:80,threshold:170},stamp:{dither:'threshold',clarity:80,sharpen:100,threshold:155,cleanup:60}}[m];setMany(p||{});updateStats()}
+function applyProcessingPreset(p){
+const sets={
+default:{dither:'jarvisBright',brightness:8,contrast:32,gamma:125,sharpen:24,clarity:20,threshold:158,ditherPpi:95,ditherForce:45,globalDotSpacing:45,shadowDensity:82,lightScatter:68,antiClog:25,deepBlack:72,lightClean:62},
+photo:{dither:'jarvisBright',brightness:12,contrast:38,gamma:120,sharpen:28,clarity:28,threshold:160,ditherPpi:105,ditherForce:50,globalDotSpacing:35,shadowDensity:82,lightScatter:58,deepBlack:68,lightClean:55,bgReduce:28},
+portrait:{dither:'sierra',brightness:16,contrast:24,gamma:132,sharpen:14,clarity:14,threshold:168,ditherPpi:95,ditherForce:38,globalDotSpacing:38,shadowDensity:72,lightScatter:75,antiClog:35,deepBlack:58,lightClean:70},
+logo:{dither:'threshold',brightness:5,contrast:85,gamma:100,sharpen:100,clarity:85,threshold:150,ditherPpi:80,globalDotSpacing:80,deepBlack:95,lightClean:90,cleanup:60},
+sketch:{dither:'threshold',brightness:10,contrast:52,gamma:110,sharpen:75,clarity:80,threshold:165,cleanup:45,edge:65},
+lineart:{dither:'lineConnect',brightness:8,contrast:60,gamma:105,sharpen:70,clarity:75,threshold:155,lineSpacing:6,connectStrength:80,cleanup:35},
+deepblack:{dither:'burkes',brightness:4,contrast:62,gamma:108,threshold:148,deepBlack:95,shadowDensity:95,antiClog:10,lightClean:55,globalDotSpacing:30},
+softwood:{dither:'jarvisSoft',brightness:18,contrast:34,gamma:135,sharpen:24,clarity:24,threshold:172,ditherPpi:90,ditherForce:42,globalDotSpacing:52,shadowDensity:80,lightScatter:72,deepBlack:72,lightClean:68,bgReduce:35}
+};
+// Important: do not change ditherOptionsActive here.
+// The user controls that checkbox manually.
+setMany(sets[p]||{});
+updateStats();
+}
+function updateStats(){$('statMat').textContent=document.querySelector('#materialPills .pill.active')?.textContent||'—';$('statMode').textContent=document.querySelector('#styleModes .modeBtn.active')?.textContent||'—'}
+
+function getSize(){if(!img)return{w:1,h:1}; if(!$('fitExport').checked)return{w:originalCanvas.width,h:originalCanvas.height};const dpi=Math.max(72,parseInt($('dpi').value)||600),inch=Math.max(.5,parseFloat($('inchWidth').value)||5);const w=Math.round(dpi*inch);return{w,h:Math.round(w*originalCanvas.height/originalCanvas.width)}}
+function process(customDither=null,targetCanvas=processedCanvas,updateMain=true){if(!img)return null;const size=getSize(),temp=document.createElement('canvas');temp.width=size.w;temp.height=size.h;const t=temp.getContext('2d',{willReadFrequently:true});if($('mirror').checked){t.translate(size.w,0);t.scale(-1,1)}t.drawImage(originalCanvas,0,0,size.w,size.h);const data=t.getImageData(0,0,size.w,size.h).data;let gray=new Float32Array(size.w*size.h);const brightness=parseInt($('brightness').value),contrast=parseInt($('contrast').value),gamma=parseInt($('gamma').value)/100,cFactor=(259*(contrast+255))/(255*(259-contrast));for(let i=0,p=0;i<data.length;i+=4,p++){const r=data[i],g=data[i+1],b=data[i+2],maxc=Math.max(r,g,b),minc=Math.min(r,g,b),sat=maxc-minc;let v=.2126*r+.7152*g+.0722*b;v=v*.88+maxc*.08+minc*.04-sat*.08;v=cFactor*(v-128)+128+brightness;v=255*Math.pow(clamp(v)/255,1/gamma);gray[p]=clamp(v)}gray=laserReady(gray,size.w,size.h);gray=materialComp(gray,size.w,size.h);gray=clarity(gray,size.w,size.h,parseInt($('clarity').value)/100);gray=sharpen(gray,size.w,size.h,parseInt($('sharpen').value)/100);gray=forgeDitherTonePrep(gray,size.w,size.h);const d=customDither||$('dither').value,th=parseInt($('threshold').value);let out;if(d==='grayscale')out=gray;else if(d==='threshold')out=threshold(gray,th);else if(d==='lineConnect')out=lineConnect(gray,size.w,size.h,th);else if(d==='engraveLines')out=engraveLines(gray,size.w,size.h,th,false);else if(d==='crossHatch')out=engraveLines(gray,size.w,size.h,th,true);else out=diffuse(gray,size.w,size.h,th,d);out=smartAiryDots(out,gray,size.w,size.h);out=cleanup(out,size.w,size.h,parseInt($('cleanup').value));drawOutput(out,size,targetCanvas);if(updateMain){if(zoneAppliedImage){const zi=new Image();zi.onload=()=>{pctx.drawImage(zi,0,0,processedCanvas.width,processedCanvas.height)};zi.src=zoneAppliedImage}$('outSize').textContent=size.w+'×'+size.h+' px';$('statExport').textContent=size.w+'×'+size.h+' / '+$('dpi').value+' DPI';$('statBlack').textContent=Math.round(countBlack(out)/out.length*100)+'%';$('statScore').textContent=score(out)+'%';$('status').textContent='Rendu généré en qualité maximale.';applyZoom()}return{out,size}}
+function drawOutput(out,size,canvas){const ctx=canvas.getContext('2d');canvas.width=size.w;canvas.height=size.h;const imgData=ctx.createImageData(size.w,size.h);for(let p=0,i=0;p<out.length;p++,i+=4){let v=out[p];if($('invert').checked)v=255-v;imgData.data[i]=imgData.data[i+1]=imgData.data[i+2]=v;imgData.data[i+3]=255}ctx.putImageData(imgData,0,0)}
+function clamp(v){return Math.max(0,Math.min(255,v))}function threshold(g,t){const o=new Float32Array(g.length);for(let i=0;i<g.length;i++)o[i]=g[i]<t?0:255;return o}function boxBlur(g,w,h,r){const o=new Float32Array(g.length);for(let y=0;y<h;y++)for(let x=0;x<w;x++){let s=0,c=0;for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){const nx=x+dx,ny=y+dy;if(nx>=0&&nx<w&&ny>=0&&ny<h){s+=g[ny*w+nx];c++}}o[y*w+x]=s/c}return o}
+function laserReady(g,w,h){const shadow=parseInt($('shadowLift').value)/100,high=parseInt($('highlightProtect').value)/100,bal=parseInt($('laserBalance').value)/100,bg=parseInt($('bgReduce').value)/100,o=new Float32Array(g.length);for(let i=0;i<g.length;i++){let v=g[i],n=v/255,bright=255*(1-Math.pow(1-n,1+shadow*1.45));v=v*(1-shadow*.35)+bright*(shadow*.35);let hm=Math.max(0,(v-150)/105);v=v+hm*high*30+bal*16-(1-bal)*6;if(v>145)v+=bg*35;o[i]=clamp(v)}return o}
+function materialComp(g,w,h){const comp=parseInt($('materialComp').value)/100,grain=parseInt($('grainComp').value)/100,loss=parseInt($('dotLoss').value)/100;if(comp<=0)return g;const blur=boxBlur(g,w,h,2),o=new Float32Array(g.length);for(let i=0;i<g.length;i++){let detail=Math.abs(g[i]-blur[i])/255,v=g[i]-detail*comp*(12+grain*25);if(detail<.05)v+=comp*grain*18;if(v>90&&v<190)v-=comp*loss*18;o[i]=clamp(v)}return o}
+function clarity(g,w,h,a){if(a<=0)return g;const blur=boxBlur(g,w,h,2),o=new Float32Array(g.length);for(let i=0;i<g.length;i++)o[i]=clamp(g[i]+(g[i]-blur[i])*a*1.2);return o}
+function sharpen(g,w,h,a){if(a<=0)return g;const o=new Float32Array(g.length);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x,sh=g[i]*5-g[y*w+Math.max(0,x-1)]-g[y*w+Math.min(w-1,x+1)]-g[Math.max(0,y-1)*w+x]-g[Math.min(h-1,y+1)*w+x];o[i]=clamp(g[i]*(1-a)+sh*a)}return o}
+function forgeDitherTonePrep(gray,w,h){if(!$('ditherOptionsActive').checked)return gray;const deep=parseInt($('deepBlack').value)/100,light=parseInt($('lightClean').value)/100,anti=parseInt($('antiClog').value)/100,force=parseInt($('ditherForce').value)/100,o=new Float32Array(gray.length);for(let i=0;i<gray.length;i++){let v=gray[i];if(v<95)v-=deep*(95-v)*.85;if(v>165)v+=light*(v-165)*.7;v=128+(v-128)*(0.85+force*.45);if(v<28)v+=anti*10;o[i]=clamp(v)}return o}
+function diffuse(g,w,h,t,mode){if(mode==='jarvisBright')t=Math.min(210,t+16);if(mode==='jarvisSoft')t=Math.min(205,t+8);const b=new Float32Array(g),o=new Float32Array(g.length);let weights;if(mode==='sierra')weights=[[1,0,5/32],[2,0,3/32],[-2,1,2/32],[-1,1,4/32],[0,1,5/32],[1,1,4/32],[2,1,2/32],[-1,2,2/32],[0,2,3/32],[1,2,2/32]];else if(mode==='burkes')weights=[[1,0,8/32],[2,0,4/32],[-2,1,2/32],[-1,1,4/32],[0,1,8/32],[1,1,4/32],[2,1,2/32]];else weights=[[1,0,7/48],[2,0,5/48],[-2,1,3/48],[-1,1,5/48],[0,1,7/48],[1,1,5/48],[2,1,3/48],[-2,2,1/48],[-1,2,3/48],[0,2,5/48],[1,2,3/48],[2,2,1/48]];for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x,old=b[i],nv=old<t?0:255;o[i]=nv;const err=old-nv;for(const [dx,dy,m] of weights){const nx=x+dx,ny=y+dy;if(nx>=0&&nx<w&&ny>=0&&ny<h)b[ny*w+nx]+=err*m}}return o}
+function smartAiryDots(out,gray,w,h){if(!$('ditherOptionsActive').checked)return out;const ppi=parseInt($('ditherPpi').value),spacingCtrl=parseInt($('globalDotSpacing').value)/100,shadowKeep=parseInt($('shadowDensity').value)/100,lightScatter=parseInt($('lightScatter').value)/100,ppiSpacing=Math.max(1,Math.round(220/Math.max(40,ppi))),o=new Float32Array(out);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x;if(out[i]>=128)continue;const tone=gray[i]/255,darkness=1-tone,localSpacing=Math.max(1,ppiSpacing+Math.round(spacingCtrl*4)+Math.round(tone*lightScatter*8)-Math.round(darkness*shadowKeep*3)),gate=((x*17+y*31+(x*y)%13)%localSpacing),rnd=((x*928371+y*364479+17)%1000)/1000,keep=Math.max(.04,Math.min(.98,darkness*(.38+shadowKeep*.82)));if(gate!==0||rnd>keep)o[i]=255}return o}
+function lineConnect(g,w,h,t){const o=new Float32Array(g.length);o.fill(255);for(let y=0;y<h;y++){let last=-9999;for(let x=0;x<w;x++){const i=y*w+x;if(g[i]<t){if(x-last>1&&x-last<8)for(let xx=last;xx<=x;xx++)o[y*w+xx]=0;o[i]=0;last=x}}}return o}
+function engraveLines(g,w,h,t,cross){const spacing=parseInt($('lineSpacing').value),angle=parseInt($('lineAngle').value),o=new Float32Array(g.length);o.fill(255);const draw=ang=>{const r=ang*Math.PI/180,c=Math.cos(r),s=Math.sin(r);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x;if(g[i]>t+50)continue;const dens=(255-g[i])/255,local=Math.max(2,spacing-dens*spacing*.55),coord=x*c+y*s,phase=Math.abs(((coord%local)+local)%local),thick=.55+dens*1.4;if(phase<thick||phase>local-thick)o[i]=0}};draw(angle);if(cross)draw(angle+65);return o}
+function cleanup(out,w,h,amt){if(amt<=0)return out;let o=new Float32Array(out),n=new Float32Array(o);for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=y*w+x;if(o[i]>=128)continue;let c=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)if(!(dx===0&&dy===0)&&o[(y+dy)*w+x+dx]<128)c++;if(c<=(amt>60?2:amt>35?1:0))n[i]=255}return n}
+function countBlack(out){let b=0;for(let i=0;i<out.length;i++)if(out[i]<128)b++;return b}function score(out){const r=countBlack(out)/out.length,target=.3;return Math.round(Math.max(0,1-Math.abs(r-target)/target)*100)}
+
+function autoOptimize(){if(!img){applyMaterial(activeMaterial);applyMode(activeMode);return}const candidates=['jarvisBright','sierra','burkes','jarvisSoft','lineConnect'];let best=null;candidates.forEach(m=>{const res=process(m,document.createElement('canvas'),false),sc=score(res.out);if(!best||sc>best.score)best={m,score:sc}});if(best)setv('dither',best.m);process();$('status').textContent='Auto Optimize: '+(best?best.m:'rendu')+' sélectionné.'}
+$('forgeBtn').onclick=autoOptimize;$('forgeBtn2').onclick=autoOptimize;if($('cleanupBtn'))$('cleanupBtn').onclick=()=>{setv('cleanup',parseInt($('cleanup').value)<65?75:25);updateLabels();process()};$('fsBtn').onclick=()=>{if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});else document.exitFullscreen()};$('exportBtn').onclick=exportPNG;$('exportBtn2').onclick=exportPNG;
+function exportPNG(){if(!img){alert('Importe une image avant export.');return}process(null,processedCanvas,true);const a=document.createElement('a');a.download='forgeburn-export-'+$('dpi').value+'dpi.png';a.href=processedCanvas.toDataURL('image/png');a.click()}
+
+$('compareBtn').onclick=()=>{if(!img){alert('Importe une image avant le comparateur.');return}$('compareModal').classList.add('show');buildCompare()};$('closeCompareBtn').onclick=()=>$('compareModal').classList.remove('show');$('refreshCompareBtn').onclick=buildCompare;$('compareModal').addEventListener('click',e=>{if(e.target.id==='compareModal')$('compareModal').classList.remove('show')});
+function buildCompare(){const grid=$('compareModalGrid');grid.innerHTML='';[['jarvisBright','Jarvis Bright'],['sierra','Sierra'],['burkes','Burkes'],['jarvisSoft','Jarvis Soft'],['lineConnect','Points → lignes'],['engraveLines','Hachures'],['crossHatch','Cross Hatch'],['threshold','Noir/blanc']].forEach(([m,name])=>{const card=document.createElement('div');card.className='modalCard';card.innerHTML='<div class="modalCardTitle"><span>'+name+'</span><strong>...</strong></div><div class="modalCardCanvas"></div><button>Utiliser ce rendu</button>';const c=document.createElement('canvas');card.querySelector('.modalCardCanvas').appendChild(c);grid.appendChild(card);const res=process(m,c,false);card.querySelector('strong').textContent=score(res.out)+'%';card.querySelector('button').onclick=()=>{setv('dither',m);process();$('compareModal').classList.remove('show')}})}
+
+let zoneHistory=[],zoneTool='erase',zoneDrawing=false;
+if($('zoneBtn'))$('zoneBtn').onclick=()=>{if(!img){alert('Importe une image avant Atelier Zones.');return}$('zoneModal').classList.add('show');copyCanvasToZone();zoneHistory=[];saveZoneHistory()};
+document.querySelectorAll('.zoneTool').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.zoneTool').forEach(b=>b.classList.remove('active'));btn.classList.add('active');zoneTool=btn.dataset.zoneTool});
+function copyCanvasToZone(){const z=$('zoneCanvas');z.width=processedCanvas.width;z.height=processedCanvas.height;z.getContext('2d',{willReadFrequently:true}).drawImage(processedCanvas,0,0);z.style.width=processedCanvas.style.width||processedCanvas.width+'px';z.style.height=processedCanvas.style.height||processedCanvas.height+'px'}
+function saveZoneHistory(){const z=$('zoneCanvas');zoneHistory.push(z.getContext('2d',{willReadFrequently:true}).getImageData(0,0,z.width,z.height));if(zoneHistory.length>25)zoneHistory.shift()}
+function applyZoneBrush(clientX,clientY){const z=$('zoneCanvas'),rect=z.getBoundingClientRect(),x=Math.round((clientX-rect.left)*z.width/rect.width),y=Math.round((clientY-rect.top)*z.height/rect.height),r=parseInt($('zoneBrush').value),power=parseInt($('zonePower').value)/100,ctx=z.getContext('2d',{willReadFrequently:true}),imgData=ctx.getImageData(0,0,z.width,z.height),data=imgData.data;for(let yy=Math.max(0,y-r);yy<Math.min(z.height,y+r);yy++)for(let xx=Math.max(0,x-r);xx<Math.min(z.width,x+r);xx++){const dx=xx-x,dy=yy-y,dist=Math.sqrt(dx*dx+dy*dy);if(dist>r)continue;const feather=(1-dist/r)*power,idx=(yy*z.width+xx)*4;let v=data[idx];if(zoneTool==='erase')v=255;if(zoneTool==='lighten')v=v+(255-v)*feather;if(zoneTool==='darken')v=v*(1-feather);if(zoneTool==='clean')v=v>120?255:v+(255-v)*feather*.45;if(zoneTool==='boost')v=v<150?v*(1-feather*.7):v+(255-v)*feather*.35;if(zoneTool==='detail'){const n=((xx*13+yy*29)%100)/100;if(n<feather*.55&&v<230)v=0}if(zoneTool==='space'){const n=((xx*17+yy*31)%100)/100;if(n<feather*.75)v=255}v=Math.max(0,Math.min(255,Math.round(v)));data[idx]=data[idx+1]=data[idx+2]=v;data[idx+3]=255}ctx.putImageData(imgData,0,0)}
+const zc=$('zoneCanvas');zc.addEventListener('mousedown',e=>{zoneDrawing=true;saveZoneHistory();applyZoneBrush(e.clientX,e.clientY);e.preventDefault()});zc.addEventListener('mousemove',e=>{if(zoneDrawing)applyZoneBrush(e.clientX,e.clientY)});window.addEventListener('mouseup',()=>zoneDrawing=false);zc.addEventListener('touchstart',e=>{zoneDrawing=true;saveZoneHistory();const p=e.touches[0];applyZoneBrush(p.clientX,p.clientY);e.preventDefault()},{passive:false});zc.addEventListener('touchmove',e=>{if(zoneDrawing){const p=e.touches[0];applyZoneBrush(p.clientX,p.clientY);e.preventDefault()}},{passive:false});window.addEventListener('touchend',()=>zoneDrawing=false);
+$('zoneUndoBtn').onclick=()=>{const z=$('zoneCanvas');if(zoneHistory.length<2)return;zoneHistory.pop();z.getContext('2d').putImageData(zoneHistory[zoneHistory.length-1],0,0)};
+$('zoneResetBtn').onclick=()=>{zoneAppliedImage=null;if(currentProjectIndex>=0)projectImages[currentProjectIndex].zones=null;process();copyCanvasToZone();zoneHistory=[];saveZoneHistory()};
+$('closeZoneBtn').onclick=()=>{const z=$('zoneCanvas');processedCanvas.getContext('2d').drawImage(z,0,0,processedCanvas.width,processedCanvas.height);zoneAppliedImage=z.toDataURL('image/png');if(currentProjectIndex>=0)projectImages[currentProjectIndex].zones=zoneAppliedImage;$('zoneModal').classList.remove('show')};
+
+updateStats();
+</script>
+
+<script>
+/* ForgeBurn v4.3 — moteur visuel corrigé
+   Patch final volontairement placé après le moteur original :
+   il remplace process() par un moteur plus réactif et visible.
+*/
+(function(){
+  function FB(id){ return document.getElementById(id); }
+  function val(id, fallback=0){ const e=FB(id); return e ? parseFloat(e.value) : fallback; }
+  function checked(id){ const e=FB(id); return !!(e && e.checked); }
+  function clamp(v){ return Math.max(0, Math.min(255, v)); }
+
+  function getExportSize(){
+    if(!window.img) return {w:1,h:1};
+    const oc = FB('originalCanvas');
+    if(!checked('fitExport')) return {w:oc.width, h:oc.height};
+    const dpi = Math.max(72, parseInt(FB('dpi')?.value || 600));
+    const inch = Math.max(.5, parseFloat(FB('inchWidth')?.value || 5));
+    const w = Math.round(dpi * inch);
+    return {w, h:Math.round(w * oc.height / oc.width)};
+  }
+
+  function getTonePixels(size){
+    const oc = FB('originalCanvas');
+    const tmp = document.createElement('canvas');
+    tmp.width = size.w; tmp.height = size.h;
+    const t = tmp.getContext('2d', {willReadFrequently:true});
+    if(checked('mirror')){ t.translate(size.w,0); t.scale(-1,1); }
+    t.drawImage(oc,0,0,size.w,size.h);
+    const data = t.getImageData(0,0,size.w,size.h).data;
+
+    const brightness = val('brightness',0);
+    const contrast = val('contrast',0);
+    const gamma = val('gamma',100) / 100;
+    const clarity = val('clarity',0) / 100;
+    const sharpen = val('sharpen',0) / 100;
+    const shadowLift = val('shadowLift',0) / 100;
+    const highlightProtect = val('highlightProtect',0) / 100;
+    const bgReduce = val('bgReduce',0) / 100;
+    const deepBlack = val('deepBlack',0) / 100;
+    const lightClean = val('lightClean',0) / 100;
+    const force = val('ditherForce',50) / 100;
+
+    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+    const gray = new Float32Array(size.w*size.h);
+
+    for(let i=0,p=0;i<data.length;i+=4,p++){
+      const r=data[i], g=data[i+1], b=data[i+2];
+      const maxc=Math.max(r,g,b), minc=Math.min(r,g,b), sat=maxc-minc;
+
+      let v = .2126*r + .7152*g + .0722*b;
+      v = v*.86 + maxc*.10 + minc*.04 - sat*.08;
+      v = factor * (v - 128) + 128 + brightness;
+
+      // gamma très visible
+      v = 255 * Math.pow(clamp(v)/255, 1/Math.max(.1,gamma));
+
+      // récupérer ombres sans délaver les noirs
+      if(v < 130) v += shadowLift * 18;
+
+      // nettoyer les hautes lumières / fond
+      if(v > 145) v += bgReduce * 55;
+      if(v > 165) v += lightClean * (v-165) * .9;
+      if(v > 185) v += highlightProtect * 24;
+
+      // noir profond : rend vraiment les ombres noires
+      if(v < 115) v -= deepBlack * (115-v) * 1.15;
+
+      // force dithering = accentue les tons
+      v = 128 + (v - 128) * (.75 + force*.75);
+
+      // clarté/netteté visibles
+      gray[p] = clamp(v);
+    }
+
+    // Mini netteté réelle
+    if(clarity>0 || sharpen>0){
+      const src = new Float32Array(gray);
+      const amount = clarity*.8 + sharpen*.9;
+      for(let y=1;y<size.h-1;y++){
+        for(let x=1;x<size.w-1;x++){
+          const i=y*size.w+x;
+          const blur = (src[i-1]+src[i+1]+src[i-size.w]+src[i+size.w]+src[i]) / 5;
+          gray[i] = clamp(src[i] + (src[i]-blur)*amount);
+        }
+      }
+    }
+    return gray;
+  }
+
+  function renderDots(gray,size,customMode){
+    const mode = customMode || FB('dither')?.value || 'jarvisBright';
+    const threshold = val('threshold',158);
+    const ppi = val('ditherPpi',95);
+    const globalSpacing = val('globalDotSpacing',45)/100;
+    const shadowDensity = val('shadowDensity',82)/100;
+    const lightScatter = val('lightScatter',68)/100;
+    const antiClog = val('antiClog',25)/100;
+    const ditherActive = checked('ditherOptionsActive');
+
+    const out = new Float32Array(gray.length);
+    out.fill(255);
+
+    if(mode === 'grayscale'){
+      for(let i=0;i<gray.length;i++) out[i]=gray[i];
+      return out;
+    }
+
+    if(mode === 'threshold'){
+      for(let i=0;i<gray.length;i++) out[i] = gray[i] < threshold ? 0 : 255;
+      return out;
+    }
+
+    if(mode === 'lineConnect' || mode === 'engraveLines' || mode === 'crossHatch'){
+      const spacing = Math.max(2, val('lineSpacing',7));
+      for(let y=0;y<size.h;y++){
+        for(let x=0;x<size.w;x++){
+          const i=y*size.w+x;
+          const tone = gray[i]/255;
+          if(gray[i] < threshold && ((x+y) % Math.round(spacing + tone*spacing)) === 0) out[i]=0;
+          if(mode==='crossHatch' && gray[i] < threshold-20 && ((x-y+size.h) % Math.round(spacing+2))===0) out[i]=0;
+        }
+      }
+      return out;
+    }
+
+    // Dithering PPI vraiment visible :
+    // PPI bas = grosse trame espacée, PPI haut = trame fine dense.
+    const baseStep = ditherActive ? Math.max(1, Math.round(240 / Math.max(40, ppi))) : 1;
+
+    for(let y=0;y<size.h;y++){
+      for(let x=0;x<size.w;x++){
+        const i=y*size.w+x;
+        const tone = gray[i]/255;          // 0 noir, 1 blanc
+        const darkness = 1 - tone;
+
+        let keep = darkness;
+        keep = Math.pow(keep, 1.05);
+
+        // Les ombres restent denses, les zones pâles se dispersent.
+        if(ditherActive){
+          keep *= (.45 + shadowDensity*.85);
+          keep *= (1 - tone * lightScatter * .75);
+          if(gray[i] < 35) keep *= (1 - antiClog*.25);
+        }
+
+        // Modes de diffusion différents
+        if(mode === 'jarvisBright') keep *= 1.10;
+        if(mode === 'jarvisSoft') keep *= .88;
+        if(mode === 'sierra') keep *= .98;
+        if(mode === 'burkes') keep *= 1.16;
+        if(mode === 'stucki') keep *= 1.08;
+
+        const localStep = ditherActive
+          ? Math.max(1, baseStep + Math.round(globalSpacing*5) + Math.round(tone*lightScatter*9) - Math.round(darkness*shadowDensity*3))
+          : 1;
+
+        const gate = ((x*17 + y*31 + (x*y)%19) % localStep);
+        const rnd = ((x*928371 + y*364479 + 12345) % 1000) / 1000;
+
+        if(gate===0 && rnd < Math.max(.02, Math.min(.98, keep))){
+          out[i]=0;
+        }
+      }
+    }
+    return out;
+  }
+
+  function drawToCanvas(out,size,canvas){
+    canvas.width=size.w; canvas.height=size.h;
+    const ctx=canvas.getContext('2d');
+    const image=ctx.createImageData(size.w,size.h);
+    let black=0;
+    for(let p=0,i=0;p<out.length;p++,i+=4){
+      let v=out[p];
+      if(checked('invert')) v=255-v;
+      if(v<128) black++;
+      image.data[i]=image.data[i+1]=image.data[i+2]=v;
+      image.data[i+3]=255;
+    }
+    ctx.putImageData(image,0,0);
+    return black;
+  }
+
+  window.process = function(customDither=null, targetCanvas=null, updateMain=true){
+    if(!window.img && !FB('originalCanvas').width) return null;
+    const canvas = targetCanvas || FB('processedCanvas');
+    const size = getExportSize();
+    const gray = getTonePixels(size);
+    const out = renderDots(gray,size,customDither);
+    const black = drawToCanvas(out,size,canvas);
+
+    if(updateMain){
+      FB('outSize').textContent = size.w + '×' + size.h + ' px';
+      FB('statExport').textContent = size.w + '×' + size.h + ' / ' + (FB('dpi')?.value || 600) + ' DPI';
+      FB('statBlack').textContent = Math.round(black/out.length*100) + '%';
+      FB('statScore').textContent = Math.max(1, Math.min(100, Math.round((1-Math.abs((black/out.length)-.30)/.30)*100))) + '%';
+      FB('status').textContent = 'Rendu mis à jour — moteur v4.3 actif.';
+      if(typeof window.applyZoom === 'function') window.applyZoom();
+    }
+    return {out,size};
+  };
+
+  window.exportPNG = function(){
+    if(!FB('originalCanvas').width){ alert('Importe une image avant export.'); return; }
+    window.process(null, FB('processedCanvas'), true);
+    const a=document.createElement('a');
+    a.download='forgeburn-export-qualite-max.png';
+    a.href=FB('processedCanvas').toDataURL('image/png');
+    a.click();
+  };
+
+  // Remet les boutons export sur le nouveau moteur.
+  setTimeout(()=>{
+    ['exportBtn','exportBtn2'].forEach(id=>{
+      const b=FB(id);
+      if(b) b.onclick=window.exportPNG;
+    });
+
+    // Force tous les contrôles à régénérer vraiment.
+    document.querySelectorAll('input,select').forEach(el=>{
+      el.addEventListener('input',()=>{ if(FB('originalCanvas').width) window.process(); });
+      el.addEventListener('change',()=>{ if(FB('originalCanvas').width) window.process(); });
+    });
+
+    if(FB('status')) FB('status').textContent='Moteur v4.3 chargé — les curseurs sont maintenant actifs.';
+  },300);
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v4.4 — Live Preview Fix
+   Corrige la prévisualisation temps réel :
+   - ne dépend plus de window.img
+   - utilise directement originalCanvas
+   - tous les curseurs relancent le rendu
+   - update immédiat + debounce léger
+*/
+(function(){
+  const FB = id => document.getElementById(id);
+  const clamp = v => Math.max(0, Math.min(255, v));
+  const val = (id, fallback=0) => {
+    const e = FB(id);
+    if(!e) return fallback;
+    return parseFloat(e.value ?? fallback);
+  };
+  const isOn = id => {
+    const e = FB(id);
+    return !!(e && e.checked);
+  };
+
+  let liveTimer = null;
+
+  function hasImage(){
+    const oc = FB("originalCanvas");
+    return !!(oc && oc.width > 1 && oc.height > 1);
+  }
+
+  function exportSize(){
+    const oc = FB("originalCanvas");
+    if(!oc || !oc.width) return {w:1,h:1};
+
+    if(!isOn("fitExport")){
+      return {w:oc.width, h:oc.height};
+    }
+
+    const dpi = Math.max(72, parseInt(FB("dpi")?.value || 600));
+    const inch = Math.max(0.5, parseFloat(FB("inchWidth")?.value || 5));
+    const w = Math.round(dpi * inch);
+    return {w, h:Math.round(w * oc.height / oc.width)};
+  }
+
+  function buildGray(size){
+    const oc = FB("originalCanvas");
+    const tmp = document.createElement("canvas");
+    tmp.width = size.w;
+    tmp.height = size.h;
+
+    const ctx = tmp.getContext("2d", {willReadFrequently:true});
+    if(isOn("mirror")){
+      ctx.translate(size.w,0);
+      ctx.scale(-1,1);
+    }
+    ctx.drawImage(oc,0,0,size.w,size.h);
+
+    const data = ctx.getImageData(0,0,size.w,size.h).data;
+    const gray = new Float32Array(size.w * size.h);
+
+    const brightness = val("brightness",0);
+    const contrast = val("contrast",0);
+    const gamma = Math.max(0.1, val("gamma",100) / 100);
+    const sharpen = val("sharpen",0) / 100;
+    const clarity = val("clarity",0) / 100;
+
+    const shadowLift = val("shadowLift",0) / 100;
+    const highlightProtect = val("highlightProtect",0) / 100;
+    const laserBalance = val("laserBalance",50) / 100;
+    const bgReduce = val("bgReduce",0) / 100;
+
+    const deepBlack = val("deepBlack",0) / 100;
+    const lightClean = val("lightClean",0) / 100;
+    const ditherForce = val("ditherForce",50) / 100;
+
+    const cFactor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+
+    for(let i=0,p=0;i<data.length;i+=4,p++){
+      const r=data[i], g=data[i+1], b=data[i+2];
+      const maxc=Math.max(r,g,b), minc=Math.min(r,g,b), sat=maxc-minc;
+
+      let v = 0.2126*r + 0.7152*g + 0.0722*b;
+      v = v*0.86 + maxc*0.10 + minc*0.04 - sat*0.08;
+
+      v = cFactor * (v - 128) + 128 + brightness;
+      v = 255 * Math.pow(clamp(v)/255, 1/gamma);
+
+      // Contrôles visibles
+      if(v < 140) v += shadowLift * 24;
+      if(v > 150) v += bgReduce * 70;
+      if(v > 170) v += lightClean * (v - 165) * 0.95;
+      if(v > 185) v += highlightProtect * 30;
+
+      // Balance laser
+      v += (laserBalance - 0.5) * 34;
+
+      // Noir profond
+      if(v < 120) v -= deepBlack * (120 - v) * 1.25;
+
+      // Force dithering visible
+      v = 128 + (v - 128) * (0.70 + ditherForce * 0.90);
+
+      gray[p] = clamp(v);
+    }
+
+    // Clarté / netteté visibles
+    const amount = clarity * 0.85 + sharpen * 0.95;
+    if(amount > 0.01){
+      const src = new Float32Array(gray);
+      for(let y=1;y<size.h-1;y++){
+        for(let x=1;x<size.w-1;x++){
+          const i=y*size.w+x;
+          const blur = (src[i] + src[i-1] + src[i+1] + src[i-size.w] + src[i+size.w]) / 5;
+          gray[i] = clamp(src[i] + (src[i] - blur) * amount);
+        }
+      }
+    }
+
+    return gray;
+  }
+
+  function render(gray,size,customMode){
+    const mode = customMode || FB("dither")?.value || "jarvisBright";
+    const threshold = val("threshold",158);
+
+    const out = new Float32Array(gray.length);
+    out.fill(255);
+
+    if(mode === "grayscale"){
+      for(let i=0;i<gray.length;i++) out[i] = gray[i];
+      return out;
+    }
+
+    if(mode === "threshold"){
+      for(let i=0;i<gray.length;i++) out[i] = gray[i] < threshold ? 0 : 255;
+      return out;
+    }
+
+    if(mode === "lineConnect" || mode === "engraveLines" || mode === "crossHatch"){
+      const spacing = Math.max(2, val("lineSpacing",7));
+      for(let y=0;y<size.h;y++){
+        for(let x=0;x<size.w;x++){
+          const i=y*size.w+x;
+          const tone = gray[i] / 255;
+          if(gray[i] < threshold && ((x+y) % Math.round(spacing + tone*spacing)) === 0) out[i]=0;
+          if(mode==="crossHatch" && gray[i] < threshold-20 && ((x-y+size.h) % Math.round(spacing+2))===0) out[i]=0;
+        }
+      }
+      return out;
+    }
+
+    const active = isOn("ditherOptionsActive");
+    const ppi = val("ditherPpi",95);
+    const spacing = val("globalDotSpacing",45) / 100;
+    const shadowDensity = val("shadowDensity",82) / 100;
+    const lightScatter = val("lightScatter",68) / 100;
+    const antiClog = val("antiClog",25) / 100;
+
+    // PPI réellement visible
+    const ppiStep = active ? Math.max(1, Math.round(260 / Math.max(40, ppi))) : 1;
+
+    for(let y=0;y<size.h;y++){
+      for(let x=0;x<size.w;x++){
+        const i=y*size.w+x;
+        const tone = gray[i] / 255;
+        const darkness = 1 - tone;
+
+        let keep = darkness;
+
+        if(mode==="jarvisBright") keep *= 1.10;
+        if(mode==="jarvisSoft") keep *= 0.88;
+        if(mode==="sierra") keep *= 1.00;
+        if(mode==="burkes") keep *= 1.18;
+        if(mode==="stucki") keep *= 1.08;
+
+        if(active){
+          keep *= (0.40 + shadowDensity * 0.90);
+          keep *= (1 - tone * lightScatter * 0.72);
+          if(gray[i] < 34) keep *= (1 - antiClog * 0.28);
+        }
+
+        const localStep = active
+          ? Math.max(1, ppiStep + Math.round(spacing*6) + Math.round(tone*lightScatter*10) - Math.round(darkness*shadowDensity*3))
+          : 1;
+
+        const gate = ((x*17 + y*31 + (x*y)%19) % localStep);
+        const rnd = ((x*928371 + y*364479 + 12345) % 1000) / 1000;
+
+        if(gate === 0 && rnd < Math.max(0.015, Math.min(0.98, keep))){
+          out[i] = 0;
+        }
+      }
+    }
+
+    return out;
+  }
+
+  function draw(out,size,canvas){
+    canvas.width = size.w;
+    canvas.height = size.h;
+
+    const ctx = canvas.getContext("2d");
+    const img = ctx.createImageData(size.w,size.h);
+    let black = 0;
+
+    for(let p=0,i=0;p<out.length;p++,i+=4){
+      let v = out[p];
+      if(isOn("invert")) v = 255 - v;
+      if(v < 128) black++;
+
+      img.data[i]=v;
+      img.data[i+1]=v;
+      img.data[i+2]=v;
+      img.data[i+3]=255;
+    }
+
+    ctx.putImageData(img,0,0);
+    return black;
+  }
+
+  function updateZoomLabels(){
+    const z = window.zoomLevel || 1;
+    if(FB("zoomInfo1")) FB("zoomInfo1").textContent = Math.round(z*100)+"%";
+    if(FB("zoomInfo2")) FB("zoomInfo2").textContent = Math.round(z*100)+"%";
+  }
+
+  window.process = function(customDither=null, targetCanvas=null, updateMain=true){
+    if(!hasImage()) return null;
+
+    const canvas = targetCanvas || FB("processedCanvas");
+    const size = exportSize();
+    const gray = buildGray(size);
+    const out = render(gray,size,customDither);
+    const black = draw(out,size,canvas);
+
+    if(updateMain){
+      if(FB("outSize")) FB("outSize").textContent = size.w+"×"+size.h+" px";
+      if(FB("statExport")) FB("statExport").textContent = size.w+"×"+size.h+" / "+(FB("dpi")?.value || 600)+" DPI";
+      if(FB("statBlack")) FB("statBlack").textContent = Math.round(black/out.length*100)+"%";
+      if(FB("statScore")){
+        const ratio = black / out.length;
+        FB("statScore").textContent = Math.max(1, Math.min(100, Math.round((1-Math.abs(ratio-.30)/.30)*100)))+"%";
+      }
+      if(FB("status")) FB("status").textContent = "Aperçu temps réel actif.";
+      if(typeof window.applyZoom === "function") window.applyZoom();
+      else updateZoomLabels();
+    }
+
+    return {out,size};
+  };
+
+  window.liveRender = function(){
+    if(!hasImage()) return;
+    clearTimeout(liveTimer);
+    liveTimer = setTimeout(()=>window.process(null, FB("processedCanvas"), true), 35);
+  };
+
+  window.exportPNG = function(){
+    if(!hasImage()){
+      alert("Importe une image avant export.");
+      return;
+    }
+    window.process(null, FB("processedCanvas"), true);
+    const a=document.createElement("a");
+    a.download="forgeburn-export-qualite-max.png";
+    a.href=FB("processedCanvas").toDataURL("image/png");
+    a.click();
+  };
+
+  setTimeout(()=>{
+    // Rebranche tous les contrôles au rendu live
+    document.querySelectorAll("input, select").forEach(el=>{
+      el.addEventListener("input", window.liveRender);
+      el.addEventListener("change", window.liveRender);
+    });
+
+    ["exportBtn","exportBtn2"].forEach(id=>{
+      const b=FB(id);
+      if(b) b.onclick = window.exportPNG;
+    });
+
+    // Rebranche Auto Optimize pour forcer un refresh visible
+    ["forgeBtn","forgeBtn2"].forEach(id=>{
+      const b=FB(id);
+      if(b){
+        const old = b.onclick;
+        b.onclick = function(e){
+          if(typeof old === "function") old.call(this,e);
+          window.liveRender();
+        };
+      }
+    });
+
+    if(FB("status")) FB("status").textContent = "Moteur v4.4 chargé — prévisualisation temps réel corrigée.";
+  },300);
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v4.5 — Dithering checkbox lock + generic presets */
+(function(){
+  const FB = id => document.getElementById(id);
+
+  // Label clarity
+  const boxHead = document.querySelector("#ditherOptionsBox .ditherBoxHead span");
+  if(boxHead) boxHead.textContent = "🔥 Réglages avancés du dithering";
+
+  const small = document.querySelector("#ditherOptionsBox small");
+  if(small) small.textContent = "Ces réglages s’appliquent seulement quand la case actif est cochée. Le type de rendu se choisit au-dessus.";
+
+  // Remove/rename any leftover buttons if a browser kept old markup
+  document.querySelectorAll("#processingPresets .modeBtn").forEach(btn=>{
+    const t = (btn.textContent || "").toLowerCase();
+    if(t.includes("dinosaure") || t.includes("mtg") || t.includes("carte")){
+      btn.remove();
+    }
+  });
+
+  // Keep user in control of the checkbox
+  let userDitherChoice = FB("ditherOptionsActive") ? FB("ditherOptionsActive").checked : false;
+
+  function syncDitherPanel(){
+    const active = FB("ditherOptionsActive");
+    const panel = FB("ditherAdvancedPanel");
+    if(active) userDitherChoice = active.checked;
+    if(panel && active) panel.classList.toggle("hidden", !active.checked);
+  }
+
+  if(FB("ditherOptionsActive")){
+    FB("ditherOptionsActive").checked = userDitherChoice;
+    FB("ditherOptionsActive").addEventListener("change", syncDitherPanel);
+    syncDitherPanel();
+  }
+
+  // Override setv so presets cannot toggle ditherOptionsActive automatically.
+  if(typeof window.setv === "function"){
+    const oldSetv = window.setv;
+    window.setv = function(id,v){
+      if(id === "ditherOptionsActive") return;
+      return oldSetv(id,v);
+    };
+  }
+
+  // Override setMany also, just in case.
+  if(typeof window.setMany === "function"){
+    const oldSetMany = window.setMany;
+    window.setMany = function(o){
+      if(o && Object.prototype.hasOwnProperty.call(o, "ditherOptionsActive")){
+        o = Object.assign({}, o);
+        delete o.ditherOptionsActive;
+      }
+      return oldSetMany(o);
+    };
+  }
+
+  // After clicking any preset, restore manual checkbox state.
+  document.querySelectorAll("#processingPresets .modeBtn, [data-dither-preset]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      setTimeout(()=>{
+        if(FB("ditherOptionsActive")) FB("ditherOptionsActive").checked = userDitherChoice;
+        syncDitherPanel();
+        if(typeof window.liveRender === "function") window.liveRender();
+      },20);
+    });
+  });
+
+  if(FB("status")) FB("status").textContent = "v4.5 prêt — les réglages dithering restent manuels.";
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v4.6 — Zoom original/résultat indépendants */
+(function(){
+  const FB = id => document.getElementById(id);
+  let originalZoom = 1;
+  let processedZoom = 1;
+
+  function clampZoom(z){
+    return Math.max(0.08, Math.min(12, z));
+  }
+
+  function setCanvasZoom(canvas, zoom){
+    if(!canvas || !canvas.width || !canvas.height) return;
+    canvas.style.width = Math.max(1, Math.round(canvas.width * zoom)) + "px";
+    canvas.style.height = Math.max(1, Math.round(canvas.height * zoom)) + "px";
+  }
+
+  function updateZoomUI(){
+    const oc = FB("originalCanvas");
+    const pc = FB("processedCanvas");
+    setCanvasZoom(oc, originalZoom);
+    setCanvasZoom(pc, processedZoom);
+
+    if(FB("zoomInfo1")) FB("zoomInfo1").textContent = Math.round(originalZoom * 100) + "%";
+    if(FB("zoomInfo2")) FB("zoomInfo2").textContent = Math.round(processedZoom * 100) + "%";
+
+    // Keep old global variable somewhat compatible with older code
+    window.zoomLevel = processedZoom;
+  }
+
+  function isSynced(){
+    return !!(FB("syncZoom") && FB("syncZoom").checked);
+  }
+
+  function setOriginalZoom(z){
+    originalZoom = clampZoom(z);
+    if(isSynced()) processedZoom = originalZoom;
+    updateZoomUI();
+  }
+
+  function setProcessedZoom(z){
+    processedZoom = clampZoom(z);
+    if(isSynced()) originalZoom = processedZoom;
+    updateZoomUI();
+  }
+
+  function zoomHolder(holder, target){
+    holder.addEventListener("wheel", e=>{
+      e.preventDefault();
+
+      const rect = holder.getBoundingClientRect();
+      const oldZoom = target === "original" ? originalZoom : processedZoom;
+      const mouseX = e.clientX - rect.left + holder.scrollLeft;
+      const mouseY = e.clientY - rect.top + holder.scrollTop;
+
+      const newZoom = clampZoom(oldZoom * (e.deltaY < 0 ? 1.12 : 0.89));
+
+      if(target === "original") setOriginalZoom(newZoom);
+      else setProcessedZoom(newZoom);
+
+      const applied = target === "original" ? originalZoom : processedZoom;
+      const ratio = applied / oldZoom;
+
+      holder.scrollLeft = mouseX * ratio - (e.clientX - rect.left);
+      holder.scrollTop = mouseY * ratio - (e.clientY - rect.top);
+    }, {passive:false});
+  }
+
+  function attachDrag(holder){
+    let drag=false,sx=0,sy=0,sl=0,st=0;
+    holder.addEventListener("mousedown", e=>{
+      drag=true;
+      sx=e.pageX;
+      sy=e.pageY;
+      sl=holder.scrollLeft;
+      st=holder.scrollTop;
+      holder.style.cursor = "grabbing";
+      e.preventDefault();
+    });
+    window.addEventListener("mouseup", ()=>{
+      drag=false;
+      holder.style.cursor = "grab";
+    });
+    holder.addEventListener("mousemove", e=>{
+      if(!drag) return;
+      holder.scrollLeft = sl - (e.pageX - sx);
+      holder.scrollTop = st - (e.pageY - sy);
+    });
+  }
+
+  // Override global applyZoom so live preview no longer forces both to same zoom.
+  window.applyZoom = updateZoomUI;
+
+  setTimeout(()=>{
+    const holders = document.querySelectorAll(".previewArea .canvasHolder");
+    const originalHolder = holders[0];
+    const processedHolder = holders[1];
+
+    if(originalHolder && !originalHolder.dataset.independentZoom){
+      originalHolder.dataset.independentZoom = "1";
+      zoomHolder(originalHolder, "original");
+      attachDrag(originalHolder);
+    }
+
+    if(processedHolder && !processedHolder.dataset.independentZoom){
+      processedHolder.dataset.independentZoom = "1";
+      zoomHolder(processedHolder, "processed");
+      attachDrag(processedHolder);
+    }
+
+    FB("origZoomInBtn")?.addEventListener("click",()=>setOriginalZoom(originalZoom*1.2));
+    FB("origZoomOutBtn")?.addEventListener("click",()=>setOriginalZoom(originalZoom*.82));
+    FB("origZoomResetBtn")?.addEventListener("click",()=>setOriginalZoom(1));
+
+    FB("procZoomInBtn")?.addEventListener("click",()=>setProcessedZoom(processedZoom*1.2));
+    FB("procZoomOutBtn")?.addEventListener("click",()=>setProcessedZoom(processedZoom*.82));
+    FB("procZoomResetBtn")?.addEventListener("click",()=>setProcessedZoom(1));
+
+    // Old top buttons act on both when sync is on, otherwise on result only.
+    FB("zoomInBtn")?.addEventListener("click",()=>{
+      if(isSynced()) setOriginalZoom(originalZoom*1.2);
+      else setProcessedZoom(processedZoom*1.2);
+    });
+    FB("zoomOutBtn")?.addEventListener("click",()=>{
+      if(isSynced()) setOriginalZoom(originalZoom*.82);
+      else setProcessedZoom(processedZoom*.82);
+    });
+    FB("zoomFitBtn")?.addEventListener("click",()=>{
+      if(isSynced()){
+        originalZoom = processedZoom = 1;
+      }else{
+        processedZoom = 1;
+      }
+      updateZoomUI();
+      document.querySelectorAll(".previewArea .canvasHolder").forEach(h=>{
+        h.scrollLeft=0;
+        h.scrollTop=0;
+      });
+    });
+
+    FB("syncZoom")?.addEventListener("change",()=>{
+      if(isSynced()){
+        processedZoom = originalZoom;
+        updateZoomUI();
+      }
+    });
+
+    // Double click reset per panel
+    originalHolder?.addEventListener("dblclick",()=>setOriginalZoom(1));
+    processedHolder?.addEventListener("dblclick",()=>setProcessedZoom(1));
+
+    updateZoomUI();
+    if(FB("status")) FB("status").textContent = "v4.6 — zoom original/résultat indépendants.";
+  },350);
+})();
+</script>
+
+
+<div class="loupeBox" id="laserLoupe">
+  <div class="loupeHead">Loupe laser — Original / Résultat</div>
+  <div class="loupeCanvases">
+    <canvas id="loupeOriginal"></canvas>
+    <canvas id="loupeProcessed"></canvas>
+  </div>
+</div>
+
+
+<script>
+/* ForgeBurn v5.0 — Pro Laser Tools
+   Modules fonctionnels:
+   - Analyse image
+   - Forge AI
+   - Heatmap laser
+   - Détection zones bouchées
+   - Simulation rendu gravé
+   - Loupe original/résultat
+   - Atelier zones densité/espacement renforcé
+*/
+(function(){
+  const FB = id => document.getElementById(id);
+  const clamp = v => Math.max(0, Math.min(255, v));
+  let loupeEnabled = false;
+
+  function hasImage(){
+    const oc=FB("originalCanvas");
+    return !!(oc && oc.width>1 && oc.height>1);
+  }
+
+  function ctx2d(c){ return c.getContext("2d", {willReadFrequently:true}); }
+
+  function getGrayFromCanvas(canvas, maxSide=700){
+    if(!canvas || !canvas.width) return null;
+    const scale = Math.min(1, maxSide / Math.max(canvas.width, canvas.height));
+    const w = Math.max(1, Math.round(canvas.width*scale));
+    const h = Math.max(1, Math.round(canvas.height*scale));
+    const tmp=document.createElement("canvas");
+    tmp.width=w; tmp.height=h;
+    const t=ctx2d(tmp);
+    t.drawImage(canvas,0,0,w,h);
+    const data=t.getImageData(0,0,w,h).data;
+    const gray=new Float32Array(w*h);
+    for(let i=0,p=0;i<data.length;i+=4,p++){
+      gray[p]=0.2126*data[i]+0.7152*data[i+1]+0.0722*data[i+2];
+    }
+    return {gray,w,h,scale};
+  }
+
+  function analyzeCanvas(canvas){
+    const g=getGrayFromCanvas(canvas,800);
+    if(!g) return null;
+    const {gray,w,h}=g;
+    let dark=0, black=0, pale=0, mid=0, edge=0, sum=0;
+    for(let y=1;y<h-1;y++){
+      for(let x=1;x<w-1;x++){
+        const i=y*w+x, v=gray[i];
+        sum+=v;
+        if(v<55) black++;
+        if(v<95) dark++;
+        if(v>205) pale++;
+        if(v>=95 && v<=205) mid++;
+        const gx=Math.abs(gray[i-1]-gray[i+1]);
+        const gy=Math.abs(gray[i-w]-gray[i+w]);
+        if(gx+gy>55) edge++;
+      }
+    }
+    const n=(w-2)*(h-2);
+    const darkPct=dark/n, blackPct=black/n, palePct=pale/n, midPct=mid/n, edgePct=edge/n;
+    let type="Photo";
+    if(edgePct>.19 && midPct<.45) type="Logo / texte";
+    else if(palePct>.45 && edgePct>.10) type="Dessin / contour";
+    else if(midPct>.48 && edgePct>.08) type="Photo détaillée";
+    else if(blackPct>.20) type="Image sombre";
+    return {
+      type,
+      darkPct, blackPct, palePct, midPct, edgePct,
+      avg:sum/n,
+      clogRisk:Math.min(100, Math.round((blackPct*1.5 + darkPct*.65)*100)),
+      paleRisk:Math.min(100, Math.round(palePct*100)),
+      detailScore:Math.min(100, Math.round(edgePct*430))
+    };
+  }
+
+  function updateAnalysis(){
+    if(!hasImage()) return null;
+    const a = analyzeCanvas(FB("processedCanvas").width ? FB("processedCanvas") : FB("originalCanvas"));
+    if(!a) return null;
+    if(FB("aiType")) FB("aiType").textContent = a.type;
+    if(FB("clogRisk")) FB("clogRisk").textContent = a.clogRisk + "%";
+    if(FB("paleRisk")) FB("paleRisk").textContent = a.paleRisk + "%";
+    let advice="Bon équilibre";
+    if(a.clogRisk>42) advice="Augmenter espacement / réduire noirs";
+    else if(a.paleRisk>55) advice="Renforcer contraste / seuil";
+    else if(a.detailScore<18) advice="Ajouter clarté / netteté";
+    if(FB("aiAdvice")) FB("aiAdvice").textContent = advice;
+    return a;
+  }
+
+  function setVal(id,v){
+    const e=FB(id);
+    if(!e) return;
+    if(e.type==="checkbox") e.checked=!!v;
+    else e.value=v;
+    e.dispatchEvent(new Event("input",{bubbles:true}));
+    e.dispatchEvent(new Event("change",{bubbles:true}));
+  }
+
+  function forgeAI(){
+    if(!hasImage()){
+      alert("Importe une image avant Forge AI.");
+      return;
+    }
+    const a = analyzeCanvas(FB("originalCanvas"));
+    if(!a) return;
+
+    // On n'active PAS le dithering avancé de force; si déjà activé, on optimise ses valeurs.
+    if(a.type.includes("Logo")){
+      setVal("dither","threshold");
+      setVal("contrast",85); setVal("brightness",5); setVal("gamma",100);
+      setVal("sharpen",100); setVal("clarity",85); setVal("threshold",150);
+      setVal("cleanup",60); setVal("deepBlack",95); setVal("lightClean",90);
+    } else if(a.type.includes("Dessin")){
+      setVal("dither","lineConnect");
+      setVal("contrast",58); setVal("brightness",10); setVal("gamma",108);
+      setVal("sharpen",75); setVal("clarity",75); setVal("threshold",158);
+      setVal("cleanup",40);
+    } else if(a.blackPct>.18 || a.darkPct>.32){
+      setVal("dither","burkes");
+      setVal("brightness",16); setVal("contrast",46); setVal("gamma",122);
+      setVal("threshold",162); setVal("deepBlack",72); setVal("lightClean",66);
+      setVal("globalDotSpacing",52); setVal("shadowDensity",78);
+    } else {
+      setVal("dither","jarvisBright");
+      setVal("brightness",12); setVal("contrast",38); setVal("gamma",122);
+      setVal("sharpen",32); setVal("clarity",30); setVal("threshold",160);
+      setVal("deepBlack",70); setVal("lightClean",62);
+    }
+
+    if(FB("ditherOptionsActive") && FB("ditherOptionsActive").checked){
+      if(a.clogRisk>42){
+        setVal("ditherPpi",90);
+        setVal("globalDotSpacing",62);
+        setVal("antiClog",42);
+        setVal("shadowDensity",74);
+      }else{
+        setVal("ditherPpi",105);
+        setVal("globalDotSpacing",42);
+        setVal("antiClog",24);
+        setVal("shadowDensity",84);
+      }
+      setVal("lightScatter", a.paleRisk>50 ? 75 : 60);
+      setVal("ditherForce", a.detailScore<20 ? 62 : 48);
+    }
+
+    if(typeof window.liveRender==="function") window.liveRender();
+    else if(typeof window.process==="function") window.process();
+
+    setTimeout(()=>{
+      updateAnalysis();
+      if(FB("status")) FB("status").textContent="Forge AI a optimisé les réglages.";
+    },120);
+  }
+
+  function getOverlayCanvas(holder, id){
+    let c=FB(id);
+    if(!c){
+      c=document.createElement("canvas");
+      c.id=id;
+      c.className="proOverlayCanvas";
+      holder.appendChild(c);
+    }
+    return c;
+  }
+
+  function syncOverlayGeometry(overlay){
+    const pc=FB("processedCanvas");
+    overlay.width=pc.width;
+    overlay.height=pc.height;
+    overlay.style.width=pc.style.width || (pc.width+"px");
+    overlay.style.height=pc.style.height || (pc.height+"px");
+  }
+
+  function clearOverlays(){
+    ["heatmapOverlayCanvas","clogOverlayCanvas","burnOverlayCanvas"].forEach(id=>{
+      const c=FB(id);
+      if(c) c.remove();
+    });
+  }
+
+  function drawHeatmap(){
+    if(!hasImage()) return;
+    const holder=document.querySelectorAll(".previewArea .canvasHolder")[1];
+    if(!holder) return;
+    const pc=FB("processedCanvas");
+    const overlay=getOverlayCanvas(holder,"heatmapOverlayCanvas");
+    syncOverlayGeometry(overlay);
+    const src=ctx2d(pc).getImageData(0,0,pc.width,pc.height).data;
+    const ctx=overlay.getContext("2d");
+    const out=ctx.createImageData(pc.width,pc.height);
+    for(let i=0;i<src.length;i+=4){
+      const v=src[i];
+      let r=0,g=0,b=0,a=90;
+      if(v<55){r=255;g=0;b=0;a=130;}          // trop foncé
+      else if(v<120){r=255;g=180;b=0;a=100;}  // fort/acceptable
+      else if(v<205){r=80;g=220;b=60;a=70;}   // optimal
+      else {r=0;g=170;b=255;a=70;}            // trop pâle
+      out.data[i]=r; out.data[i+1]=g; out.data[i+2]=b; out.data[i+3]=a;
+    }
+    ctx.putImageData(out,0,0);
+  }
+
+  function drawClog(){
+    if(!hasImage()) return;
+    const holder=document.querySelectorAll(".previewArea .canvasHolder")[1];
+    if(!holder) return;
+    const pc=FB("processedCanvas");
+    const overlay=getOverlayCanvas(holder,"clogOverlayCanvas");
+    syncOverlayGeometry(overlay);
+    const ctx=overlay.getContext("2d");
+    ctx.clearRect(0,0,overlay.width,overlay.height);
+    const data=ctx2d(pc).getImageData(0,0,pc.width,pc.height).data;
+    const block=24;
+    ctx.lineWidth=Math.max(2, pc.width/900);
+    ctx.strokeStyle="rgba(255,0,60,.95)";
+    ctx.fillStyle="rgba(255,0,60,.16)";
+    for(let y=0;y<pc.height;y+=block){
+      for(let x=0;x<pc.width;x+=block){
+        let dark=0,total=0;
+        for(let yy=y;yy<Math.min(pc.height,y+block);yy++){
+          for(let xx=x;xx<Math.min(pc.width,x+block);xx++){
+            const i=(yy*pc.width+xx)*4;
+            if(data[i]<65) dark++;
+            total++;
+          }
+        }
+        if(total && dark/total>.48){
+          ctx.fillRect(x,y,block,block);
+          ctx.strokeRect(x,y,block,block);
+        }
+      }
+    }
+  }
+
+  function drawBurnSimulation(){
+    if(!hasImage()) return;
+    const holder=document.querySelectorAll(".previewArea .canvasHolder")[1];
+    if(!holder) return;
+    const pc=FB("processedCanvas");
+    const overlay=getOverlayCanvas(holder,"burnOverlayCanvas");
+    syncOverlayGeometry(overlay);
+    overlay.style.mixBlendMode="normal";
+    overlay.style.opacity=".92";
+    const src=ctx2d(pc).getImageData(0,0,pc.width,pc.height).data;
+    const ctx=overlay.getContext("2d");
+    const out=ctx.createImageData(pc.width,pc.height);
+    for(let i=0;i<src.length;i+=4){
+      const v=src[i];
+      const burn=(255-v)/255;
+      // bois clair simulé: fond crème, brûlure brun/noir
+      const base=[236,207,158], dark=[58,32,16];
+      out.data[i]=Math.round(base[0]*(1-burn)+dark[0]*burn);
+      out.data[i+1]=Math.round(base[1]*(1-burn)+dark[1]*burn);
+      out.data[i+2]=Math.round(base[2]*(1-burn)+dark[2]*burn);
+      out.data[i+3]=255;
+    }
+    ctx.putImageData(out,0,0);
+  }
+
+  function refreshProOverlays(){
+    clearOverlays();
+    if(FB("overlayBurn")?.checked) drawBurnSimulation();
+    if(FB("overlayHeatmap")?.checked) drawHeatmap();
+    if(FB("overlayClog")?.checked) drawClog();
+    updateAnalysis();
+  }
+
+  function toggleHeatmap(){
+    if(!hasImage()) return;
+    if(FB("overlayHeatmap")) FB("overlayHeatmap").checked = !FB("overlayHeatmap").checked;
+    refreshProOverlays();
+  }
+  function toggleClog(){
+    if(!hasImage()) return;
+    if(FB("overlayClog")) FB("overlayClog").checked = !FB("overlayClog").checked;
+    refreshProOverlays();
+  }
+  function toggleBurn(){
+    if(!hasImage()) return;
+    if(FB("overlayBurn")) FB("overlayBurn").checked = !FB("overlayBurn").checked;
+    refreshProOverlays();
+  }
+
+  function updateLoupe(e){
+    if(!loupeEnabled || !hasImage()) return;
+    const box=FB("laserLoupe");
+    if(!box) return;
+
+    const original=FB("originalCanvas");
+    const processed=FB("processedCanvas");
+    const holders=document.querySelectorAll(".previewArea .canvasHolder");
+    const rect=(e.target===processed || holders[1].contains(e.target)) ? processed.getBoundingClientRect() : original.getBoundingClientRect();
+
+    let x=(e.clientX-rect.left)/rect.width;
+    let y=(e.clientY-rect.top)/rect.height;
+    x=Math.max(0,Math.min(1,x));
+    y=Math.max(0,Math.min(1,y));
+
+    const ox=Math.round(x*original.width);
+    const oy=Math.round(y*original.height);
+    const px=Math.round(x*processed.width);
+    const py=Math.round(y*processed.height);
+
+    drawLoupeCanvas(FB("loupeOriginal"), original, ox, oy);
+    drawLoupeCanvas(FB("loupeProcessed"), processed, px, py);
+
+    box.style.left=Math.min(window.innerWidth-280, e.clientX+18)+"px";
+    box.style.top=Math.min(window.innerHeight-210, e.clientY+18)+"px";
+    box.classList.add("show");
+  }
+
+  function drawLoupeCanvas(dest, src, cx, cy){
+    if(!dest || !src.width) return;
+    dest.width=130; dest.height=156;
+    const d=dest.getContext("2d");
+    d.imageSmoothingEnabled=false;
+    d.fillStyle="#fff"; d.fillRect(0,0,dest.width,dest.height);
+    const sample=48;
+    d.drawImage(src, cx-sample/2, cy-sample/2, sample, sample, 0, 0, dest.width, dest.height);
+    d.strokeStyle="#00d9ff";
+    d.lineWidth=1;
+    d.beginPath();
+    d.moveTo(dest.width/2,0); d.lineTo(dest.width/2,dest.height);
+    d.moveTo(0,dest.height/2); d.lineTo(dest.width,dest.height/2);
+    d.stroke();
+  }
+
+  function toggleLoupe(){
+    loupeEnabled=!loupeEnabled;
+    const box=FB("laserLoupe");
+    if(box && !loupeEnabled) box.classList.remove("show");
+    if(FB("status")) FB("status").textContent = loupeEnabled ? "Loupe laser activée." : "Loupe laser désactivée.";
+  }
+
+  // Patch process/liveRender to refresh overlays after render
+  const oldProcess = window.process;
+  if(typeof oldProcess==="function"){
+    window.process = function(){
+      const result = oldProcess.apply(this, arguments);
+      setTimeout(refreshProOverlays, 20);
+      return result;
+    };
+  }
+
+  const oldLive = window.liveRender;
+  if(typeof oldLive==="function"){
+    window.liveRender = function(){
+      const r = oldLive.apply(this, arguments);
+      setTimeout(refreshProOverlays, 90);
+      return r;
+    };
+  }
+
+  // Make zone "detail" and "space" clearly useful by patching zone brush if available
+  // The current zone brush already supports detail/space in v4.6, so this keeps it.
+
+  setTimeout(()=>{
+    FB("forgeAiBtn")?.addEventListener("click", forgeAI);
+    FB("heatmapBtn")?.addEventListener("click", toggleHeatmap);
+    FB("burnBtn")?.addEventListener("click", toggleBurn);
+    FB("clogBtn")?.addEventListener("click", toggleClog);
+    FB("loupeBtn")?.addEventListener("click", toggleLoupe);
+
+    ["overlayHeatmap","overlayClog","overlayBurn"].forEach(id=>{
+      FB(id)?.addEventListener("change", refreshProOverlays);
+    });
+
+    document.addEventListener("mousemove", updateLoupe);
+
+    if(FB("status")) FB("status").textContent = "v5.8 Fullscreen Fix chargé — Forge AI, heatmap, simulation, bouchage et loupe prêts.";
+  },500);
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v5.1 — Overlay Follow Zoom Fix
+   Corrige heatmap / zones bouchées / simulation :
+   les overlays suivent maintenant exactement le canvas résultat
+   quand on zoom, dézoom, scroll ou regen.
+*/
+(function(){
+  const FB = id => document.getElementById(id);
+
+  function processedCanvas(){
+    return FB("processedCanvas");
+  }
+
+  function processedHolder(){
+    const holders = document.querySelectorAll(".previewArea .canvasHolder");
+    return holders && holders[1] ? holders[1] : null;
+  }
+
+  function ensureOverlay(id){
+    const holder = processedHolder();
+    const pc = processedCanvas();
+    if(!holder || !pc) return null;
+
+    let c = FB(id);
+    if(!c){
+      c = document.createElement("canvas");
+      c.id = id;
+      c.className = "proOverlayCanvas";
+      c.style.position = "absolute";
+      c.style.pointerEvents = "none";
+      c.style.boxShadow = "none";
+      c.style.background = "transparent";
+      c.style.margin = "0";
+      holder.appendChild(c);
+    }
+
+    c.width = pc.width;
+    c.height = pc.height;
+
+    // Position réelle du canvas dans le holder, pas une valeur fixe.
+    c.style.left = pc.offsetLeft + "px";
+    c.style.top = pc.offsetTop + "px";
+    c.style.width = pc.style.width || (pc.width + "px");
+    c.style.height = pc.style.height || (pc.height + "px");
+
+    return c;
+  }
+
+  function syncAllOverlays(){
+    const pc = processedCanvas();
+    if(!pc || !pc.width) return;
+
+    ["heatmapOverlayCanvas","clogOverlayCanvas","burnOverlayCanvas"].forEach(id=>{
+      const c = FB(id);
+      if(c){
+        c.style.left = pc.offsetLeft + "px";
+        c.style.top = pc.offsetTop + "px";
+        c.style.width = pc.style.width || (pc.width + "px");
+        c.style.height = pc.style.height || (pc.height + "px");
+      }
+    });
+  }
+
+  function drawHeatmapFixed(){
+    const pc = processedCanvas();
+    if(!pc || !pc.width) return;
+
+    const overlay = ensureOverlay("heatmapOverlayCanvas");
+    if(!overlay) return;
+
+    overlay.style.mixBlendMode = "multiply";
+    overlay.style.opacity = ".72";
+
+    const src = pc.getContext("2d", {willReadFrequently:true}).getImageData(0,0,pc.width,pc.height).data;
+    const ctx = overlay.getContext("2d");
+    const out = ctx.createImageData(pc.width,pc.height);
+
+    for(let i=0;i<src.length;i+=4){
+      const v = src[i];
+      let r=0,g=0,b=0,a=90;
+      if(v<55){r=255;g=0;b=0;a=130;}
+      else if(v<120){r=255;g=180;b=0;a=100;}
+      else if(v<205){r=80;g=220;b=60;a=70;}
+      else {r=0;g=170;b=255;a=70;}
+      out.data[i]=r; out.data[i+1]=g; out.data[i+2]=b; out.data[i+3]=a;
+    }
+    ctx.putImageData(out,0,0);
+    syncAllOverlays();
+  }
+
+  function drawClogFixed(){
+    const pc = processedCanvas();
+    if(!pc || !pc.width) return;
+
+    const overlay = ensureOverlay("clogOverlayCanvas");
+    if(!overlay) return;
+
+    overlay.style.mixBlendMode = "normal";
+    overlay.style.opacity = ".88";
+
+    const ctx = overlay.getContext("2d");
+    ctx.clearRect(0,0,overlay.width,overlay.height);
+
+    const data = pc.getContext("2d", {willReadFrequently:true}).getImageData(0,0,pc.width,pc.height).data;
+    const block = Math.max(16, Math.round(pc.width / 90));
+
+    ctx.lineWidth = Math.max(2, pc.width/900);
+    ctx.strokeStyle = "rgba(255,0,60,.95)";
+    ctx.fillStyle = "rgba(255,0,60,.16)";
+
+    for(let y=0;y<pc.height;y+=block){
+      for(let x=0;x<pc.width;x+=block){
+        let dark=0,total=0;
+        for(let yy=y;yy<Math.min(pc.height,y+block);yy++){
+          for(let xx=x;xx<Math.min(pc.width,x+block);xx++){
+            const i=(yy*pc.width+xx)*4;
+            if(data[i]<65) dark++;
+            total++;
+          }
+        }
+        if(total && dark/total>.48){
+          ctx.fillRect(x,y,block,block);
+          ctx.strokeRect(x,y,block,block);
+        }
+      }
+    }
+    syncAllOverlays();
+  }
+
+  function drawBurnFixed(){
+    const pc = processedCanvas();
+    if(!pc || !pc.width) return;
+
+    const overlay = ensureOverlay("burnOverlayCanvas");
+    if(!overlay) return;
+
+    overlay.style.mixBlendMode = "normal";
+    overlay.style.opacity = ".92";
+
+    const src = pc.getContext("2d", {willReadFrequently:true}).getImageData(0,0,pc.width,pc.height).data;
+    const ctx = overlay.getContext("2d");
+    const out = ctx.createImageData(pc.width,pc.height);
+
+    for(let i=0;i<src.length;i+=4){
+      const v=src[i];
+      const burn=(255-v)/255;
+      const base=[236,207,158], dark=[58,32,16];
+      out.data[i]=Math.round(base[0]*(1-burn)+dark[0]*burn);
+      out.data[i+1]=Math.round(base[1]*(1-burn)+dark[1]*burn);
+      out.data[i+2]=Math.round(base[2]*(1-burn)+dark[2]*burn);
+      out.data[i+3]=255;
+    }
+    ctx.putImageData(out,0,0);
+    syncAllOverlays();
+  }
+
+  function removeOverlay(id){
+    const c = FB(id);
+    if(c) c.remove();
+  }
+
+  function refreshFixedOverlays(){
+    if(!processedCanvas() || !processedCanvas().width) return;
+
+    if(FB("overlayBurn")?.checked) drawBurnFixed();
+    else removeOverlay("burnOverlayCanvas");
+
+    if(FB("overlayHeatmap")?.checked) drawHeatmapFixed();
+    else removeOverlay("heatmapOverlayCanvas");
+
+    if(FB("overlayClog")?.checked) drawClogFixed();
+    else removeOverlay("clogOverlayCanvas");
+
+    syncAllOverlays();
+  }
+
+  // Override overlay buttons with fixed versions.
+  setTimeout(()=>{
+    ["overlayHeatmap","overlayClog","overlayBurn"].forEach(id=>{
+      const el = FB(id);
+      if(el){
+        el.addEventListener("change", ()=>{
+          setTimeout(refreshFixedOverlays, 20);
+        });
+      }
+    });
+
+    const heatBtn = FB("heatmapBtn");
+    if(heatBtn){
+      heatBtn.onclick = ()=>{
+        const cb = FB("overlayHeatmap");
+        if(cb) cb.checked = !cb.checked;
+        refreshFixedOverlays();
+      };
+    }
+
+    const clogBtn = FB("clogBtn");
+    if(clogBtn){
+      clogBtn.onclick = ()=>{
+        const cb = FB("overlayClog");
+        if(cb) cb.checked = !cb.checked;
+        refreshFixedOverlays();
+      };
+    }
+
+    const burnBtn = FB("burnBtn");
+    if(burnBtn){
+      burnBtn.onclick = ()=>{
+        const cb = FB("overlayBurn");
+        if(cb) cb.checked = !cb.checked;
+        refreshFixedOverlays();
+      };
+    }
+
+    // Sync on scroll/zoom/mouse wheel/resize.
+    const holder = processedHolder();
+    if(holder){
+      holder.addEventListener("scroll", syncAllOverlays);
+      holder.addEventListener("wheel", ()=>setTimeout(syncAllOverlays, 20), {passive:true});
+      holder.addEventListener("mousemove", syncAllOverlays);
+    }
+
+    window.addEventListener("resize", syncAllOverlays);
+
+    // Patch applyZoom so every zoom updates overlay geometry.
+    const oldApplyZoom = window.applyZoom;
+    window.applyZoom = function(){
+      if(typeof oldApplyZoom === "function") oldApplyZoom.apply(this, arguments);
+      setTimeout(syncAllOverlays, 10);
+      setTimeout(refreshFixedOverlays, 40);
+    };
+
+    // Patch process/liveRender so overlays regenerate and realign after image changes.
+    const oldProcess = window.process;
+    if(typeof oldProcess === "function"){
+      window.process = function(){
+        const r = oldProcess.apply(this, arguments);
+        setTimeout(refreshFixedOverlays, 50);
+        return r;
+      };
+    }
+
+    const oldLive = window.liveRender;
+    if(typeof oldLive === "function"){
+      window.liveRender = function(){
+        const r = oldLive.apply(this, arguments);
+        setTimeout(refreshFixedOverlays, 90);
+        return r;
+      };
+    }
+
+    if(FB("status")) FB("status").textContent = "v5.1 — overlays alignés au zoom.";
+  }, 500);
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v5.2 — True Independent Zoom Fix
+   Désactive le vieux zoom global et force :
+   - Original = zoom indépendant
+   - Résultat = zoom indépendant
+   - Sync zoom seulement si la case est cochée
+*/
+(function(){
+  const FB = id => document.getElementById(id);
+
+  let originalZoom = 1;
+  let resultZoom = 1;
+
+  function clamp(z){
+    return Math.max(0.08, Math.min(12, z));
+  }
+
+  function syncOn(){
+    const cb = FB("syncZoom");
+    return !!(cb && cb.checked);
+  }
+
+  function canvasScale(canvas, zoom){
+    if(!canvas || !canvas.width || !canvas.height) return;
+    canvas.style.width = Math.round(canvas.width * zoom) + "px";
+    canvas.style.height = Math.round(canvas.height * zoom) + "px";
+  }
+
+  function syncOverlayPosition(){
+    const pc = FB("processedCanvas");
+    if(!pc) return;
+    ["heatmapOverlayCanvas","clogOverlayCanvas","burnOverlayCanvas"].forEach(id=>{
+      const c = FB(id);
+      if(c){
+        c.style.left = pc.offsetLeft + "px";
+        c.style.top = pc.offsetTop + "px";
+        c.style.width = pc.style.width || pc.width + "px";
+        c.style.height = pc.style.height || pc.height + "px";
+      }
+    });
+  }
+
+  function applyIndependentZoom(){
+    canvasScale(FB("originalCanvas"), originalZoom);
+    canvasScale(FB("processedCanvas"), resultZoom);
+
+    if(FB("zoomInfo1")) FB("zoomInfo1").textContent = Math.round(originalZoom * 100) + "%";
+    if(FB("zoomInfo2")) FB("zoomInfo2").textContent = Math.round(resultZoom * 100) + "%";
+
+    window.zoomLevel = resultZoom; // compat seulement
+    setTimeout(syncOverlayPosition, 10);
+  }
+
+  function setOriginalZoom(z){
+    originalZoom = clamp(z);
+    if(syncOn()) resultZoom = originalZoom;
+    applyIndependentZoom();
+  }
+
+  function setResultZoom(z){
+    resultZoom = clamp(z);
+    if(syncOn()) originalZoom = resultZoom;
+    applyIndependentZoom();
+  }
+
+  function getPreviewHolders(){
+    const holders = document.querySelectorAll(".previewArea .canvasHolder");
+    return {original: holders[0], result: holders[1]};
+  }
+
+  function replaceWheelHandler(holder, which){
+    if(!holder || holder.dataset.trueIndependentZoom === "1") return;
+
+    // Capture phase bloque les anciens wheel handlers qui zoomaient les deux.
+    holder.addEventListener("wheel", e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      const rect = holder.getBoundingClientRect();
+      const oldZoom = which === "original" ? originalZoom : resultZoom;
+
+      const mouseX = e.clientX - rect.left + holder.scrollLeft;
+      const mouseY = e.clientY - rect.top + holder.scrollTop;
+
+      const nextZoom = clamp(oldZoom * (e.deltaY < 0 ? 1.12 : 0.89));
+
+      if(which === "original") setOriginalZoom(nextZoom);
+      else setResultZoom(nextZoom);
+
+      const actualZoom = which === "original" ? originalZoom : resultZoom;
+      const ratio = actualZoom / oldZoom;
+
+      holder.scrollLeft = mouseX * ratio - (e.clientX - rect.left);
+      holder.scrollTop = mouseY * ratio - (e.clientY - rect.top);
+    }, {passive:false, capture:true});
+
+    holder.dataset.trueIndependentZoom = "1";
+  }
+
+  function wireButton(id, fn){
+    const b = FB(id);
+    if(!b || b.dataset.trueIndependentZoom === "1") return;
+    b.addEventListener("click", e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      fn();
+    }, {capture:true});
+    b.dataset.trueIndependentZoom = "1";
+  }
+
+  function init(){
+    const holders = getPreviewHolders();
+
+    replaceWheelHandler(holders.original, "original");
+    replaceWheelHandler(holders.result, "result");
+
+    wireButton("origZoomInBtn", ()=>setOriginalZoom(originalZoom * 1.2));
+    wireButton("origZoomOutBtn", ()=>setOriginalZoom(originalZoom * 0.82));
+    wireButton("origZoomResetBtn", ()=>setOriginalZoom(1));
+
+    wireButton("procZoomInBtn", ()=>setResultZoom(resultZoom * 1.2));
+    wireButton("procZoomOutBtn", ()=>setResultZoom(resultZoom * 0.82));
+    wireButton("procZoomResetBtn", ()=>setResultZoom(1));
+
+    // Boutons du haut : si Sync est OFF, ils contrôlent seulement le résultat.
+    wireButton("zoomInBtn", ()=>{
+      if(syncOn()) setOriginalZoom(originalZoom * 1.2);
+      else setResultZoom(resultZoom * 1.2);
+    });
+
+    wireButton("zoomOutBtn", ()=>{
+      if(syncOn()) setOriginalZoom(originalZoom * 0.82);
+      else setResultZoom(resultZoom * 0.82);
+    });
+
+    wireButton("zoomFitBtn", ()=>{
+      if(syncOn()){
+        originalZoom = 1;
+        resultZoom = 1;
+      }else{
+        resultZoom = 1;
+      }
+      applyIndependentZoom();
+
+      if(!syncOn() && holders.result){
+        holders.result.scrollLeft = 0;
+        holders.result.scrollTop = 0;
+      }else{
+        document.querySelectorAll(".previewArea .canvasHolder").forEach(h=>{
+          h.scrollLeft = 0;
+          h.scrollTop = 0;
+        });
+      }
+    });
+
+    const sync = FB("syncZoom");
+    if(sync && sync.dataset.trueIndependentZoom !== "1"){
+      sync.addEventListener("change", ()=>{
+        if(sync.checked){
+          resultZoom = originalZoom;
+          applyIndependentZoom();
+        }
+      });
+      sync.dataset.trueIndependentZoom = "1";
+    }
+
+    // Override global applyZoom so any render cannot re-link both zooms.
+    window.applyZoom = applyIndependentZoom;
+
+    // Double click reset only the clicked panel
+    if(holders.original && holders.original.dataset.dblIndependent !== "1"){
+      holders.original.addEventListener("dblclick", e=>{
+        e.stopPropagation();
+        setOriginalZoom(1);
+      }, {capture:true});
+      holders.original.dataset.dblIndependent = "1";
+    }
+
+    if(holders.result && holders.result.dataset.dblIndependent !== "1"){
+      holders.result.addEventListener("dblclick", e=>{
+        e.stopPropagation();
+        setResultZoom(1);
+      }, {capture:true});
+      holders.result.dataset.dblIndependent = "1";
+    }
+
+    applyIndependentZoom();
+    if(FB("status")) FB("status").textContent = "v5.2 — zoom vraiment indépendant.";
+  }
+
+  setTimeout(init, 600);
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v5.3 — Material Aware Burn Simulation
+   La simulation gravée tient maintenant compte du matériau sélectionné.
+*/
+(function(){
+  const FB = id => document.getElementById(id);
+
+  function activeMaterial(){
+    const active = document.querySelector("#materialPills .pill.active");
+    return active ? active.dataset.material : "basswood";
+  }
+
+  function materialProfile(mat){
+    const profiles = {
+      basswood:{
+        name:"Tilleul",
+        base:[238,216,171],
+        mid:[152,96,45],
+        dark:[54,30,13],
+        smoke:.10,
+        grain:.10,
+        invert:false,
+        contrast:1.00
+      },
+      birchply:{
+        name:"Plywood bouleau",
+        base:[226,198,146],
+        mid:[143,86,40],
+        dark:[50,28,12],
+        smoke:.16,
+        grain:.22,
+        invert:false,
+        contrast:1.08
+      },
+      maple:{
+        name:"Érable",
+        base:[236,216,179],
+        mid:[130,82,41],
+        dark:[46,26,13],
+        smoke:.08,
+        grain:.08,
+        invert:false,
+        contrast:.95
+      },
+      oak:{
+        name:"Chêne",
+        base:[204,166,105],
+        mid:[112,68,30],
+        dark:[38,22,10],
+        smoke:.18,
+        grain:.35,
+        invert:false,
+        contrast:1.15
+      },
+      pine:{
+        name:"Pin",
+        base:[232,202,132],
+        mid:[137,83,32],
+        dark:[50,28,10],
+        smoke:.22,
+        grain:.42,
+        invert:false,
+        contrast:1.05
+      },
+      darkwood:{
+        name:"Bois foncé",
+        base:[99,65,36],
+        mid:[45,28,16],
+        dark:[12,8,5],
+        smoke:.12,
+        grain:.30,
+        invert:false,
+        contrast:.90
+      },
+      slate:{
+        name:"Ardoise",
+        base:[38,45,50],
+        mid:[145,155,160],
+        dark:[225,230,230],
+        smoke:.04,
+        grain:.12,
+        invert:true,
+        contrast:1.20
+      },
+      leather:{
+        name:"Cuir",
+        base:[133,78,43],
+        mid:[76,39,18],
+        dark:[24,11,5],
+        smoke:.20,
+        grain:.18,
+        invert:false,
+        contrast:1.10
+      },
+      glass:{
+        name:"Verre",
+        base:[218,232,235],
+        mid:[150,170,175],
+        dark:[80,105,112],
+        smoke:.03,
+        grain:.02,
+        invert:true,
+        contrast:.85
+      },
+      metal:{
+        name:"Métal peint",
+        base:[210,214,215],
+        mid:[95,105,110],
+        dark:[18,22,24],
+        smoke:.05,
+        grain:.03,
+        invert:false,
+        contrast:1.25
+      }
+    };
+    return profiles[mat] || profiles.basswood;
+  }
+
+  function lerp(a,b,t){
+    return a*(1-t)+b*t;
+  }
+
+  function mix(c1,c2,t){
+    return [
+      Math.round(lerp(c1[0],c2[0],t)),
+      Math.round(lerp(c1[1],c2[1],t)),
+      Math.round(lerp(c1[2],c2[2],t))
+    ];
+  }
+
+  function stableNoise(x,y){
+    return (((x*928371 + y*364479 + (x*y*97)) % 1000) / 1000);
+  }
+
+  function grainPattern(x,y,profile){
+    const n1 = stableNoise(x,y) - .5;
+    const n2 = stableNoise(Math.floor(x/7), Math.floor(y/3)) - .5;
+    const wave = Math.sin((y*.055) + Math.sin(x*.012)*1.8) * .5;
+    return (n1*.45 + n2*.35 + wave*.20) * profile.grain;
+  }
+
+  function ensureOverlay(id){
+    const holders = document.querySelectorAll(".previewArea .canvasHolder");
+    const holder = holders && holders[1] ? holders[1] : null;
+    const pc = FB("processedCanvas");
+    if(!holder || !pc) return null;
+
+    let c = FB(id);
+    if(!c){
+      c = document.createElement("canvas");
+      c.id = id;
+      c.className = "proOverlayCanvas";
+      c.style.position = "absolute";
+      c.style.pointerEvents = "none";
+      c.style.boxShadow = "none";
+      c.style.margin = "0";
+      holder.appendChild(c);
+    }
+
+    c.width = pc.width;
+    c.height = pc.height;
+    c.style.left = pc.offsetLeft + "px";
+    c.style.top = pc.offsetTop + "px";
+    c.style.width = pc.style.width || (pc.width+"px");
+    c.style.height = pc.style.height || (pc.height+"px");
+    return c;
+  }
+
+  function drawMaterialBurn(){
+    const pc = FB("processedCanvas");
+    if(!pc || !pc.width) return;
+
+    const mat = activeMaterial();
+    const profile = materialProfile(mat);
+    const overlay = ensureOverlay("burnOverlayCanvas");
+    if(!overlay) return;
+
+    overlay.style.mixBlendMode = "normal";
+    overlay.style.opacity = ".96";
+
+    const src = pc.getContext("2d", {willReadFrequently:true}).getImageData(0,0,pc.width,pc.height).data;
+    const ctx = overlay.getContext("2d");
+    const out = ctx.createImageData(pc.width,pc.height);
+
+    for(let y=0;y<pc.height;y++){
+      for(let x=0;x<pc.width;x++){
+        const i = (y*pc.width+x)*4;
+        const v = src[i];
+
+        let burn = profile.invert ? (v/255) : ((255-v)/255);
+
+        // Courbe propre au matériau : certains matériaux marquent plus vite.
+        burn = Math.pow(Math.max(0, Math.min(1, burn * profile.contrast)), profile.invert ? .85 : 1.08);
+
+        const grain = grainPattern(x,y,profile);
+        let localBurn = Math.max(0, Math.min(1, burn + grain));
+
+        let color;
+        if(localBurn < .52){
+          color = mix(profile.base, profile.mid, localBurn/.52);
+        }else{
+          color = mix(profile.mid, profile.dark, (localBurn-.52)/.48);
+        }
+
+        // léger halo fumé autour des zones brûlées
+        const smoke = profile.smoke * burn;
+        color[0] = Math.round(color[0] * (1-smoke));
+        color[1] = Math.round(color[1] * (1-smoke));
+        color[2] = Math.round(color[2] * (1-smoke));
+
+        out.data[i] = color[0];
+        out.data[i+1] = color[1];
+        out.data[i+2] = color[2];
+        out.data[i+3] = 255;
+      }
+    }
+
+    ctx.putImageData(out,0,0);
+
+    const label = FB("aiAdvice");
+    if(label && FB("overlayBurn")?.checked){
+      label.textContent = "Simulation sur " + profile.name;
+    }
+
+    // Réalignement overlay/zoom
+    overlay.style.left = pc.offsetLeft + "px";
+    overlay.style.top = pc.offsetTop + "px";
+    overlay.style.width = pc.style.width || (pc.width+"px");
+    overlay.style.height = pc.style.height || (pc.height+"px");
+  }
+
+  function refreshBurnIfActive(){
+    if(FB("overlayBurn")?.checked){
+      setTimeout(drawMaterialBurn, 30);
+    }
+  }
+
+  setTimeout(()=>{
+    // Remplace le bouton Simulation par version matériau.
+    const burnBtn = FB("burnBtn");
+    if(burnBtn){
+      burnBtn.onclick = ()=>{
+        const cb = FB("overlayBurn");
+        if(cb) cb.checked = !cb.checked;
+        if(cb && cb.checked) drawMaterialBurn();
+        else {
+          const c = FB("burnOverlayCanvas");
+          if(c) c.remove();
+        }
+      };
+    }
+
+    const cb = FB("overlayBurn");
+    if(cb){
+      cb.addEventListener("change", ()=>{
+        if(cb.checked) drawMaterialBurn();
+        else {
+          const c = FB("burnOverlayCanvas");
+          if(c) c.remove();
+        }
+      });
+    }
+
+    // Changer de matériau met à jour la simulation.
+    document.querySelectorAll("#materialPills .pill").forEach(p=>{
+      p.addEventListener("click", refreshBurnIfActive);
+    });
+
+    // Après chaque rendu, régénère la simulation matériau.
+    const oldProcess = window.process;
+    if(typeof oldProcess === "function"){
+      window.process = function(){
+        const r = oldProcess.apply(this, arguments);
+        refreshBurnIfActive();
+        return r;
+      };
+    }
+
+    const oldLive = window.liveRender;
+    if(typeof oldLive === "function"){
+      window.liveRender = function(){
+        const r = oldLive.apply(this, arguments);
+        refreshBurnIfActive();
+        return r;
+      };
+    }
+
+    // Après zoom, réaligne et conserve la simulation.
+    const oldApplyZoom = window.applyZoom;
+    window.applyZoom = function(){
+      if(typeof oldApplyZoom === "function") oldApplyZoom.apply(this, arguments);
+      refreshBurnIfActive();
+    };
+
+    if(FB("status")) FB("status").textContent = "v5.3 — simulation gravure selon matériau.";
+  },600);
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v5.4 — Hard Independent Zoom Reset
+   Fix robuste:
+   - Sync zoom OFF par défaut
+   - Original et Résultat ont chacun leur propre zoom
+   - Les anciens onclick / listeners sont contournés
+   - Le rendu live ne peut plus resynchroniser les deux
+*/
+(function(){
+  const FB = id => document.getElementById(id);
+
+  let oz = 1; // original zoom
+  let rz = 1; // result zoom
+
+  function clamp(z){
+    return Math.max(0.08, Math.min(12, z));
+  }
+
+  function syncEnabled(){
+    return !!(FB("syncZoom") && FB("syncZoom").checked);
+  }
+
+  function holders(){
+    const h = document.querySelectorAll(".previewArea .canvasHolder");
+    return {o:h[0], r:h[1]};
+  }
+
+  function canvases(){
+    return {o:FB("originalCanvas"), r:FB("processedCanvas")};
+  }
+
+  function apply(){
+    const c = canvases();
+
+    if(c.o && c.o.width){
+      c.o.style.width = Math.max(1, Math.round(c.o.width * oz)) + "px";
+      c.o.style.height = Math.max(1, Math.round(c.o.height * oz)) + "px";
+    }
+
+    if(c.r && c.r.width){
+      c.r.style.width = Math.max(1, Math.round(c.r.width * rz)) + "px";
+      c.r.style.height = Math.max(1, Math.round(c.r.height * rz)) + "px";
+    }
+
+    if(FB("zoomInfo1")) FB("zoomInfo1").textContent = Math.round(oz * 100) + "%";
+    if(FB("zoomInfo2")) FB("zoomInfo2").textContent = Math.round(rz * 100) + "%";
+
+    // compatibilité seulement; ne jamais l'utiliser pour relier les deux
+    window.zoomLevel = rz;
+
+    syncOverlays();
+  }
+
+  function syncOverlays(){
+    const pc = FB("processedCanvas");
+    if(!pc) return;
+    ["heatmapOverlayCanvas","clogOverlayCanvas","burnOverlayCanvas"].forEach(id=>{
+      const el = FB(id);
+      if(el){
+        el.style.left = pc.offsetLeft + "px";
+        el.style.top = pc.offsetTop + "px";
+        el.style.width = pc.style.width || (pc.width + "px");
+        el.style.height = pc.style.height || (pc.height + "px");
+      }
+    });
+  }
+
+  function setO(z){
+    oz = clamp(z);
+    if(syncEnabled()) rz = oz;
+    apply();
+  }
+
+  function setR(z){
+    rz = clamp(z);
+    if(syncEnabled()) oz = rz;
+    apply();
+  }
+
+  function hardWireWheel(holder, which){
+    if(!holder || holder.dataset.hardIndependentZoom === "1") return;
+
+    holder.addEventListener("wheel", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+
+      const rect = holder.getBoundingClientRect();
+      const old = which === "o" ? oz : rz;
+      const mx = e.clientX - rect.left + holder.scrollLeft;
+      const my = e.clientY - rect.top + holder.scrollTop;
+      const next = clamp(old * (e.deltaY < 0 ? 1.12 : 0.89));
+
+      if(which === "o") setO(next);
+      else setR(next);
+
+      const actual = which === "o" ? oz : rz;
+      const ratio = actual / old;
+
+      holder.scrollLeft = mx * ratio - (e.clientX - rect.left);
+      holder.scrollTop = my * ratio - (e.clientY - rect.top);
+    }, {capture:true, passive:false});
+
+    holder.dataset.hardIndependentZoom = "1";
+  }
+
+  function cleanButton(id, handler){
+    const old = FB(id);
+    if(!old) return null;
+
+    const btn = old.cloneNode(true);
+    old.parentNode.replaceChild(btn, old);
+    btn.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      handler();
+    }, {capture:true});
+    return btn;
+  }
+
+  function install(){
+    const h = holders();
+
+    // Force sync OFF par défaut
+    const sync = FB("syncZoom");
+    if(sync){
+      sync.checked = false;
+      sync.onchange = null;
+      sync.addEventListener("change", ()=>{
+        if(sync.checked){
+          rz = oz;
+          apply();
+        }
+      }, {capture:true});
+    }
+
+    hardWireWheel(h.o, "o");
+    hardWireWheel(h.r, "r");
+
+    cleanButton("origZoomInBtn", ()=>setO(oz * 1.2));
+    cleanButton("origZoomOutBtn", ()=>setO(oz * 0.82));
+    cleanButton("origZoomResetBtn", ()=>setO(1));
+
+    cleanButton("procZoomInBtn", ()=>setR(rz * 1.2));
+    cleanButton("procZoomOutBtn", ()=>setR(rz * 0.82));
+    cleanButton("procZoomResetBtn", ()=>setR(1));
+
+    // Les boutons du haut contrôlent le résultat seulement si Sync est OFF.
+    cleanButton("zoomInBtn", ()=>{
+      if(syncEnabled()) setO(oz * 1.2);
+      else setR(rz * 1.2);
+    });
+
+    cleanButton("zoomOutBtn", ()=>{
+      if(syncEnabled()) setO(oz * 0.82);
+      else setR(rz * 0.82);
+    });
+
+    cleanButton("zoomFitBtn", ()=>{
+      if(syncEnabled()){
+        oz = 1;
+        rz = 1;
+        document.querySelectorAll(".previewArea .canvasHolder").forEach(x=>{
+          x.scrollLeft = 0;
+          x.scrollTop = 0;
+        });
+      }else{
+        rz = 1;
+        if(h.r){
+          h.r.scrollLeft = 0;
+          h.r.scrollTop = 0;
+        }
+      }
+      apply();
+    });
+
+    if(h.o){
+      h.o.addEventListener("dblclick", e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        setO(1);
+      }, {capture:true});
+    }
+
+    if(h.r){
+      h.r.addEventListener("dblclick", e=>{
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        setR(1);
+      }, {capture:true});
+    }
+
+    // Override définitif : tout appel externe à applyZoom ne synchronise plus.
+    window.applyZoom = apply;
+
+    // Après chaque process, conserver les zooms séparés.
+    const oldProcess = window.process;
+    if(typeof oldProcess === "function" && !window.__hardZoomPatchedProcess){
+      window.process = function(){
+        const r = oldProcess.apply(this, arguments);
+        setTimeout(apply, 5);
+        setTimeout(apply, 40);
+        return r;
+      };
+      window.__hardZoomPatchedProcess = true;
+    }
+
+    const oldLive = window.liveRender;
+    if(typeof oldLive === "function" && !window.__hardZoomPatchedLive){
+      window.liveRender = function(){
+        const r = oldLive.apply(this, arguments);
+        setTimeout(apply, 5);
+        setTimeout(apply, 70);
+        return r;
+      };
+      window.__hardZoomPatchedLive = true;
+    }
+
+    apply();
+
+    if(FB("status")){
+      FB("status").textContent = "v5.4 — zoom original et résultat séparés, Sync désactivé.";
+    }
+  }
+
+  // Installer après tous les anciens scripts, puis réinstaller une 2e fois
+  // pour gagner contre les handlers tardifs.
+  setTimeout(install, 900);
+  setTimeout(install, 1800);
+})();
+</script>
+
+
+<div class="modalOverlay" id="clogReportModal">
+  <div class="modal">
+    <div class="modalHead">
+      <strong>🚨 Rapport zones bouchées</strong>
+      <div class="group">
+        <button class="secondary" id="fixClogModalBtn">🪄 Corriger automatiquement</button>
+        <button class="secondary" id="closeClogReportBtn">Fermer</button>
+      </div>
+    </div>
+    <div style="padding:14px;overflow:auto">
+      <div class="note" id="clogReportSummary">Analyse en attente.</div>
+      <div id="clogReportList" style="display:grid;gap:10px;margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ForgeBurn v5.5 — Smart Detail Recovery + Engravability Score */
+(function(){
+  const FB = id => document.getElementById(id);
+
+  function processedCanvas(){ return FB("processedCanvas"); }
+  function holder(){ const h=document.querySelectorAll(".previewArea .canvasHolder"); return h[1]; }
+  function ctx(c){ return c.getContext("2d",{willReadFrequently:true}); }
+
+  function ensureOverlay(id){
+    const h=holder(), pc=processedCanvas();
+    if(!h || !pc || !pc.width) return null;
+    let c=FB(id);
+    if(!c){
+      c=document.createElement("canvas");
+      c.id=id;
+      c.className="proOverlayCanvas";
+      c.style.position="absolute";
+      c.style.pointerEvents="none";
+      c.style.boxShadow="none";
+      c.style.background="transparent";
+      c.style.margin="0";
+      h.appendChild(c);
+    }
+    c.width=pc.width;
+    c.height=pc.height;
+    c.style.left=pc.offsetLeft+"px";
+    c.style.top=pc.offsetTop+"px";
+    c.style.width=pc.style.width || pc.width+"px";
+    c.style.height=pc.style.height || pc.height+"px";
+    return c;
+  }
+
+  function syncOverlay(id){
+    const pc=processedCanvas(), c=FB(id);
+    if(c && pc){
+      c.style.left=pc.offsetLeft+"px";
+      c.style.top=pc.offsetTop+"px";
+      c.style.width=pc.style.width || pc.width+"px";
+      c.style.height=pc.style.height || pc.height+"px";
+    }
+  }
+
+  function analyzeBlocks(){
+    const pc=processedCanvas();
+    if(!pc || !pc.width) return {blocks:[], score:0, clogPct:0, detailPct:0, fragilePct:0};
+
+    const data=ctx(pc).getImageData(0,0,pc.width,pc.height).data;
+    const block=Math.max(18,Math.round(pc.width/72));
+    const blocks=[];
+    let totalBlocks=0, clogBlocks=0, lostDetail=0, fragile=0, preserved=0;
+
+    for(let y=0;y<pc.height;y+=block){
+      for(let x=0;x<pc.width;x+=block){
+        let dark=0, pale=0, edge=0, total=0;
+        const maxY=Math.min(pc.height,y+block), maxX=Math.min(pc.width,x+block);
+        for(let yy=y+1; yy<maxY-1; yy++){
+          for(let xx=x+1; xx<maxX-1; xx++){
+            const i=(yy*pc.width+xx)*4;
+            const v=data[i];
+            total++;
+            if(v<65) dark++;
+            if(v>215) pale++;
+            const left=data[(yy*pc.width+xx-1)*4];
+            const right=data[(yy*pc.width+xx+1)*4];
+            const up=data[((yy-1)*pc.width+xx)*4];
+            const down=data[((yy+1)*pc.width+xx)*4];
+            if(Math.abs(left-right)+Math.abs(up-down)>120) edge++;
+          }
+        }
+        if(!total) continue;
+        totalBlocks++;
+        const darkRatio=dark/total;
+        const paleRatio=pale/total;
+        const edgeRatio=edge/total;
+
+        let risk=0;
+        let reason=[];
+        if(darkRatio>.48){ risk+=58; reason.push("trop de noirs collés"); }
+        if(darkRatio>.32 && edgeRatio<.045){ risk+=30; reason.push("détails écrasés"); }
+        if(edgeRatio>.10 && darkRatio>.38){ risk+=22; reason.push("micro-détails menacés"); }
+        if(paleRatio>.72 && edgeRatio>.05){ risk+=18; reason.push("détails trop pâles"); }
+
+        risk=Math.min(100,Math.round(risk));
+        if(risk>62) clogBlocks++;
+        if(risk>62 && edgeRatio<.055) lostDetail++;
+        else if(risk>35) fragile++;
+        else preserved++;
+
+        if(risk>30){
+          blocks.push({x,y,w:maxX-x,h:maxY-y,risk,darkRatio,paleRatio,edgeRatio,reason:reason.join(", ") || "contraste fragile"});
+        }
+      }
+    }
+
+    blocks.sort((a,b)=>b.risk-a.risk);
+
+    const clogPct=totalBlocks?Math.round(clogBlocks/totalBlocks*100):0;
+    const detailPct=totalBlocks?Math.round(preserved/totalBlocks*100):0;
+    const fragilePct=totalBlocks?Math.round(fragile/totalBlocks*100):0;
+    const score=Math.max(1,Math.min(100,Math.round(100 - clogPct*1.25 - fragilePct*.35 + detailPct*.12)));
+
+    return {blocks,score,clogPct,detailPct,fragilePct,totalBlocks};
+  }
+
+  function updateScoreUI(){
+    const a=analyzeBlocks();
+    if(FB("engraveScore")) FB("engraveScore").textContent=a.score+"/100";
+    if(FB("detailPreserve")) FB("detailPreserve").textContent=a.detailPct+"%";
+    if(FB("clogRisk")) FB("clogRisk").textContent=a.clogPct+"%";
+    if(FB("aiAdvice")){
+      let advice="Bon équilibre";
+      if(a.clogPct>25) advice="Corriger zones bouchées";
+      else if(a.fragilePct>35) advice="Détails fragiles à surveiller";
+      else if(a.score>85) advice="Très bon pour gravure";
+      FB("aiAdvice").textContent=advice;
+    }
+    return a;
+  }
+
+  function drawDetailMap(){
+    const pc=processedCanvas();
+    if(!pc || !pc.width) return;
+    const overlay=ensureOverlay("detailMapOverlayCanvas");
+    if(!overlay) return;
+
+    overlay.style.mixBlendMode="normal";
+    overlay.style.opacity=".72";
+
+    const octx=overlay.getContext("2d");
+    octx.clearRect(0,0,overlay.width,overlay.height);
+
+    const a=analyzeBlocks();
+    for(const b of a.blocks){
+      if(b.risk>70){
+        octx.fillStyle="rgba(255,0,60,.28)";
+        octx.strokeStyle="rgba(255,0,60,.95)";
+      }else if(b.risk>45){
+        octx.fillStyle="rgba(255,180,0,.24)";
+        octx.strokeStyle="rgba(255,180,0,.9)";
+      }else{
+        octx.fillStyle="rgba(80,220,90,.16)";
+        octx.strokeStyle="rgba(80,220,90,.65)";
+      }
+      octx.lineWidth=Math.max(2,pc.width/900);
+      octx.fillRect(b.x,b.y,b.w,b.h);
+      octx.strokeRect(b.x,b.y,b.w,b.h);
+    }
+
+    syncOverlay("detailMapOverlayCanvas");
+  }
+
+  function clearDetailMap(){
+    const c=FB("detailMapOverlayCanvas");
+    if(c) c.remove();
+  }
+
+  function refreshDetailMap(){
+    updateScoreUI();
+    if(FB("overlayDetailMap")?.checked) drawDetailMap();
+    else clearDetailMap();
+  }
+
+  function showClogReport(){
+    const a=updateScoreUI();
+    const modal=FB("clogReportModal");
+    const summary=FB("clogReportSummary");
+    const list=FB("clogReportList");
+    if(!modal || !summary || !list) return;
+
+    summary.textContent=`Score gravabilité : ${a.score}/100 — zones bouchées : ${a.clogPct}% — détails préservés : ${a.detailPct}%.`;
+    list.innerHTML="";
+
+    const top=a.blocks.slice(0,10);
+    if(!top.length){
+      list.innerHTML='<div class="clogCard"><strong>Aucune zone critique détectée.</strong><div class="note">Le rendu semble bien équilibré.</div></div>';
+    }else{
+      top.forEach((b,i)=>{
+        const card=document.createElement("div");
+        card.className="clogCard";
+        const cause=b.reason || "densité trop élevée";
+        card.innerHTML=`<strong>Zone ${i+1} — Risque ${b.risk}%</strong>
+          <div class="note">Cause : ${cause}</div>
+          <div class="note">Noir : ${Math.round(b.darkRatio*100)}% • Détails : ${Math.round(b.edgeRatio*100)}% • Pâle : ${Math.round(b.paleRatio*100)}%</div>
+          <div class="clogMeter"><span style="width:${b.risk}%"></span></div>`;
+        list.appendChild(card);
+      });
+    }
+
+    modal.classList.add("show");
+  }
+
+  function autoFixClog(){
+    const pc=processedCanvas();
+    if(!pc || !pc.width){
+      alert("Importe une image avant correction.");
+      return;
+    }
+
+    const a=analyzeBlocks();
+    if(!a.blocks.length){
+      if(FB("status")) FB("status").textContent="Aucune zone bouchée à corriger.";
+      return;
+    }
+
+    const image=ctx(pc).getImageData(0,0,pc.width,pc.height);
+    const data=image.data;
+
+    for(const b of a.blocks){
+      if(b.risk<45) continue;
+      const strength=Math.min(1,b.risk/100);
+
+      for(let y=b.y; y<b.y+b.h; y++){
+        for(let x=b.x; x<b.x+b.w; x++){
+          const i=(y*pc.width+x)*4;
+          const v=data[i];
+
+          // Espacer des points noirs sans pâlir toute la zone.
+          if(v<80){
+            const n=((x*17+y*31+(x*y)%13)%100)/100;
+            const removeChance=0.18 + strength*0.34;
+            if(n<removeChance){
+              data[i]=data[i+1]=data[i+2]=255;
+            }else{
+              // garder certains noirs vraiment noirs
+              data[i]=data[i+1]=data[i+2]=Math.max(0,Math.round(v*(1-strength*.12)));
+            }
+          }
+
+          // Rendre les contours moyens plus lisibles.
+          if(v>=80 && v<165){
+            const adjust=Math.round(18*strength);
+            data[i]=data[i+1]=data[i+2]=Math.min(255,v+adjust);
+          }
+        }
+      }
+    }
+
+    ctx(pc).putImageData(image,0,0);
+
+    // Sauvegarde comme retouche de zone si l'app utilise zoneAppliedImage.
+    try{
+      window.zoneAppliedImage=pc.toDataURL("image/png");
+    }catch(e){}
+
+    updateScoreUI();
+    if(FB("overlayDetailMap")?.checked) drawDetailMap();
+    if(FB("overlayClog")?.checked && FB("clogBtn")) FB("clogBtn").click();
+
+    if(FB("status")) FB("status").textContent="Correction automatique des zones bouchées appliquée.";
+  }
+
+  function syncDetailOverlay(){
+    const pc=processedCanvas();
+    const c=FB("detailMapOverlayCanvas");
+    if(c && pc){
+      c.style.left=pc.offsetLeft+"px";
+      c.style.top=pc.offsetTop+"px";
+      c.style.width=pc.style.width || pc.width+"px";
+      c.style.height=pc.style.height || pc.height+"px";
+    }
+  }
+
+  setTimeout(()=>{
+    FB("detailMapBtn")?.addEventListener("click",()=>{
+      const cb=FB("overlayDetailMap");
+      if(cb) cb.checked=!cb.checked;
+      refreshDetailMap();
+    });
+
+    FB("overlayDetailMap")?.addEventListener("change",refreshDetailMap);
+    FB("autoFixClogBtn")?.addEventListener("click",autoFixClog);
+    FB("fixClogModalBtn")?.addEventListener("click",autoFixClog);
+    FB("closeClogReportBtn")?.addEventListener("click",()=>FB("clogReportModal")?.classList.remove("show"));
+
+    // Le bouton Zones bouchées ouvre maintenant un rapport aussi.
+    const clogBtn=FB("clogBtn");
+    if(clogBtn && !clogBtn.dataset.reportPatch){
+      clogBtn.addEventListener("dblclick",showClogReport);
+      clogBtn.addEventListener("contextmenu",e=>{e.preventDefault();showClogReport();});
+      clogBtn.dataset.reportPatch="1";
+      clogBtn.title="Clic: overlay zones bouchées. Double-clic ou clic droit: rapport détaillé.";
+    }
+
+    const oldProcess=window.process;
+    if(typeof oldProcess==="function"){
+      window.process=function(){
+        const r=oldProcess.apply(this,arguments);
+        setTimeout(refreshDetailMap,80);
+        return r;
+      };
+    }
+
+    const oldLive=window.liveRender;
+    if(typeof oldLive==="function"){
+      window.liveRender=function(){
+        const r=oldLive.apply(this,arguments);
+        setTimeout(refreshDetailMap,120);
+        return r;
+      };
+    }
+
+    const oldApplyZoom=window.applyZoom;
+    window.applyZoom=function(){
+      if(typeof oldApplyZoom==="function") oldApplyZoom.apply(this,arguments);
+      setTimeout(syncDetailOverlay,20);
+    };
+
+    setInterval(syncDetailOverlay,700);
+
+    updateScoreUI();
+    if(FB("status")) FB("status").textContent="v5.5 — analyse détails + correction bouchage prêtes.";
+  },700);
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v5.6 — Smooth Dot Recovery
+   Remplace la correction carrée par:
+   - carte de risque pixelisée puis floutée
+   - transition douce
+   - protection des contours/détails
+   - retrait de points dans les amas seulement
+   - meilleure détection photo/logo
+*/
+(function(){
+  const FB = id => document.getElementById(id);
+
+  function clamp(v){ return Math.max(0, Math.min(255, v)); }
+  function val(id,fallback=0){
+    const e=FB(id);
+    return e ? parseFloat(e.value) : fallback;
+  }
+  function ctx(c){ return c.getContext("2d", {willReadFrequently:true}); }
+  function pc(){ return FB("processedCanvas"); }
+
+  function updateLocalLabels(){
+    if(FB("detailProtectVal") && FB("detailProtect")) FB("detailProtectVal").textContent = FB("detailProtect").value;
+    if(FB("smoothFixVal") && FB("smoothFix")) FB("smoothFixVal").textContent = FB("smoothFix").value;
+  }
+
+  function improvedTypeDetect(){
+    const c = FB("originalCanvas");
+    if(!c || !c.width) return "—";
+
+    const maxSide = 420;
+    const scale = Math.min(1, maxSide / Math.max(c.width,c.height));
+    const w = Math.max(1, Math.round(c.width*scale));
+    const h = Math.max(1, Math.round(c.height*scale));
+    const tmp = document.createElement("canvas");
+    tmp.width=w; tmp.height=h;
+    const t=ctx(tmp);
+    t.drawImage(c,0,0,w,h);
+    const data=t.getImageData(0,0,w,h).data;
+
+    let colors=0, grayish=0, edge=0, total=0, skin=0, dark=0, pale=0;
+    const hist = new Set();
+
+    for(let y=1;y<h-1;y+=2){
+      for(let x=1;x<w-1;x+=2){
+        const i=(y*w+x)*4;
+        const r=data[i], g=data[i+1], b=data[i+2];
+        const maxc=Math.max(r,g,b), minc=Math.min(r,g,b);
+        const sat=maxc-minc;
+        const lum=.2126*r+.7152*g+.0722*b;
+
+        total++;
+        if(sat>18) colors++;
+        if(sat<12) grayish++;
+        if(lum<70) dark++;
+        if(lum>205) pale++;
+
+        // approx peau, utile pour ne pas classer portrait en logo
+        if(r>95 && g>55 && b>35 && r>g && g>=b && (r-b)>20) skin++;
+
+        const l=data[(y*w+x-1)*4];
+        const rr=data[(y*w+x+1)*4];
+        const u=data[((y-1)*w+x)*4];
+        const d=data[((y+1)*w+x)*4];
+        if(Math.abs(l-rr)+Math.abs(u-d)>95) edge++;
+
+        hist.add(Math.round(lum/16));
+      }
+    }
+
+    const colorRatio=colors/total;
+    const edgeRatio=edge/total;
+    const skinRatio=skin/total;
+    const tones=hist.size;
+    const paleRatio=pale/total;
+    const darkRatio=dark/total;
+
+    let type="Photo";
+    if(skinRatio>.035 && tones>8) type="Portrait photo";
+    else if(colorRatio>.16 && tones>9) type="Photo couleur";
+    else if(edgeRatio>.28 && tones<7 && colorRatio<.08) type="Logo / texte";
+    else if(edgeRatio>.18 && paleRatio>.45) type="Dessin / contour";
+    else if(darkRatio>.28) type="Image sombre";
+    else type="Photo détaillée";
+
+    if(FB("aiType")) FB("aiType").textContent=type;
+    return type;
+  }
+
+  function getImageData(){
+    const c=pc();
+    if(!c || !c.width) return null;
+    return ctx(c).getImageData(0,0,c.width,c.height);
+  }
+
+  function luminanceArray(image,w,h){
+    const lum = new Float32Array(w*h);
+    const d=image.data;
+    for(let i=0,p=0;i<d.length;i+=4,p++) lum[p]=d[i];
+    return lum;
+  }
+
+  function edgeMap(lum,w,h){
+    const edge = new Float32Array(w*h);
+    for(let y=1;y<h-1;y++){
+      for(let x=1;x<w-1;x++){
+        const i=y*w+x;
+        const gx=Math.abs(lum[i-1]-lum[i+1]);
+        const gy=Math.abs(lum[i-w]-lum[i+w]);
+        edge[i]=Math.min(1,(gx+gy)/180);
+      }
+    }
+    return edge;
+  }
+
+  function riskMap(lum,edge,w,h){
+    const risk = new Float32Array(w*h);
+    const protect = val("detailProtect",85)/100;
+
+    for(let y=1;y<h-1;y++){
+      for(let x=1;x<w-1;x++){
+        const i=y*w+x;
+        const v=lum[i];
+
+        // densité locale circulaire approx 5x5
+        let dark=0,total=0;
+        for(let dy=-2;dy<=2;dy++){
+          for(let dx=-2;dx<=2;dx++){
+            const j=(y+dy)*w+(x+dx);
+            if(lum[j]<75) dark++;
+            total++;
+          }
+        }
+
+        const density = dark/total;
+        const darkness = Math.max(0,(120-v)/120);
+
+        // risque fort si noir dense + peu de contour
+        let r = density*0.75 + darkness*0.35;
+
+        // protège contours et micro détails
+        r *= (1 - edge[i]*protect*0.95);
+
+        // ne touche pas zones pas assez foncées
+        if(v>135) r*=0.15;
+
+        risk[i]=Math.max(0,Math.min(1,r));
+      }
+    }
+
+    return blurMap(risk,w,h,3);
+  }
+
+  function blurMap(src,w,h,passes){
+    let a = new Float32Array(src);
+    let b = new Float32Array(src.length);
+
+    for(let pass=0; pass<passes; pass++){
+      for(let y=1;y<h-1;y++){
+        for(let x=1;x<w-1;x++){
+          const i=y*w+x;
+          b[i]=(a[i]*4 + a[i-1]*2 + a[i+1]*2 + a[i-w]*2 + a[i+w]*2 + a[i-w-1]+a[i-w+1]+a[i+w-1]+a[i+w+1])/16;
+        }
+      }
+      const tmp=a; a=b; b=tmp;
+    }
+
+    return a;
+  }
+
+  function stableNoise(x,y){
+    return (((x*928371 + y*364479 + (x*y*97) + 17) % 1000)/1000);
+  }
+
+  function smoothDotRecovery(){
+    const c=pc();
+    if(!c || !c.width){
+      alert("Importe une image avant correction.");
+      return;
+    }
+
+    const image=getImageData();
+    const w=c.width, h=c.height;
+    const data=image.data;
+    const lum=luminanceArray(image,w,h);
+    const edges=edgeMap(lum,w,h);
+    const risk=riskMap(lum,edges,w,h);
+
+    const force=val("smoothFix",42)/100;
+    const protect=val("detailProtect",85)/100;
+
+    for(let y=1;y<h-1;y++){
+      for(let x=1;x<w-1;x++){
+        const i=y*w+x;
+        const px=i*4;
+        const v=lum[i];
+        const r=risk[i]*force;
+
+        if(r<0.08 || v>150) continue;
+
+        // bruit stable + gradient doux => aucune bordure carrée
+        const n=stableNoise(x,y);
+        const neighborDark =
+          (lum[i-1]<85?1:0)+(lum[i+1]<85?1:0)+(lum[i-w]<85?1:0)+(lum[i+w]<85?1:0);
+
+        // On retire seulement certains points dans les amas.
+        // Plus le point est isolé ou sur contour, plus il est protégé.
+        const contourProtection = edges[i]*protect;
+        const cluster = Math.min(1, neighborDark/4);
+        const removeChance = Math.max(0, r * (0.35 + cluster*0.75) * (1-contourProtection));
+
+        if(v<95 && n<removeChance){
+          // pas blanc pur systématique; transition naturelle
+          const lift = Math.round(95 + 90*r + stableNoise(y,x)*35);
+          data[px]=data[px+1]=data[px+2]=Math.min(255,lift);
+        }else if(v>=95 && v<145 && r>0.18){
+          // micro-éclaircissement doux des zones grises compressées
+          const lift = Math.round(v + 18*r*(1-contourProtection));
+          data[px]=data[px+1]=data[px+2]=clamp(lift);
+        }
+      }
+    }
+
+    ctx(c).putImageData(image,0,0);
+
+    // garde la retouche dans le résultat courant
+    try{
+      window.zoneAppliedImage = c.toDataURL("image/png");
+      if(window.projectImages && typeof window.currentProjectIndex==="number" && window.currentProjectIndex>=0){
+        window.projectImages[window.currentProjectIndex].zones = window.zoneAppliedImage;
+      }
+    }catch(e){}
+
+    improvedTypeDetect();
+    updateScoresAfterSmoothFix();
+
+    if(FB("status")) FB("status").textContent="Correction douce appliquée — sans carrés visibles.";
+  }
+
+  function updateScoresAfterSmoothFix(){
+    const c=pc();
+    if(!c || !c.width) return;
+
+    const image=getImageData();
+    const w=c.width, h=c.height;
+    const lum=luminanceArray(image,w,h);
+    const edges=edgeMap(lum,w,h);
+
+    let dark=0, pale=0, detail=0, total=0;
+    for(let i=0;i<lum.length;i++){
+      total++;
+      if(lum[i]<70) dark++;
+      if(lum[i]>215) pale++;
+      if(edges[i]>.35) detail++;
+    }
+
+    const darkPct=Math.round(dark/total*100);
+    const palePct=Math.round(pale/total*100);
+    const detailPct=Math.min(100,Math.round(detail/total*430));
+    const score=Math.max(1,Math.min(100,Math.round(100 - darkPct*.7 - palePct*.15 + detailPct*.18)));
+
+    if(FB("clogRisk")) FB("clogRisk").textContent=darkPct+"%";
+    if(FB("paleRisk")) FB("paleRisk").textContent=palePct+"%";
+    if(FB("detailPreserve")) FB("detailPreserve").textContent=detailPct+"%";
+    if(FB("engraveScore")) FB("engraveScore").textContent=score+"/100";
+
+    if(FB("aiAdvice")){
+      if(darkPct>30) FB("aiAdvice").textContent="Encore dense: augmenter espacement";
+      else if(palePct>70) FB("aiAdvice").textContent="Image très pâle: renforcer contraste";
+      else FB("aiAdvice").textContent="Correction douce réussie";
+    }
+  }
+
+  function patchReportWording(){
+    const btn=FB("autoFixClogBtn");
+    if(btn) btn.textContent="🪄 Correction douce";
+    const modalBtn=FB("fixClogModalBtn");
+    if(modalBtn) modalBtn.textContent="🪄 Correction douce";
+  }
+
+  setTimeout(()=>{
+    updateLocalLabels();
+    ["detailProtect","smoothFix"].forEach(id=>{
+      FB(id)?.addEventListener("input",updateLocalLabels);
+      FB(id)?.addEventListener("change",updateLocalLabels);
+    });
+
+    patchReportWording();
+
+    // Remplace complètement l'ancien correcteur par carré.
+    const b=FB("autoFixClogBtn");
+    if(b){
+      const clone=b.cloneNode(true);
+      b.parentNode.replaceChild(clone,b);
+      clone.addEventListener("click",smoothDotRecovery);
+    }
+
+    const mb=FB("fixClogModalBtn");
+    if(mb){
+      const clone=mb.cloneNode(true);
+      mb.parentNode.replaceChild(clone,mb);
+      clone.addEventListener("click",smoothDotRecovery);
+    }
+
+    // Détection type plus fiable après rendu/import/ajustement
+    const oldProcess=window.process;
+    if(typeof oldProcess==="function" && !window.__smoothRecoveryProcessPatch){
+      window.process=function(){
+        const r=oldProcess.apply(this,arguments);
+        setTimeout(()=>{ improvedTypeDetect(); updateScoresAfterSmoothFix(); },120);
+        return r;
+      };
+      window.__smoothRecoveryProcessPatch=true;
+    }
+
+    const oldLive=window.liveRender;
+    if(typeof oldLive==="function" && !window.__smoothRecoveryLivePatch){
+      window.liveRender=function(){
+        const r=oldLive.apply(this,arguments);
+        setTimeout(()=>{ improvedTypeDetect(); updateScoresAfterSmoothFix(); },160);
+        return r;
+      };
+      window.__smoothRecoveryLivePatch=true;
+    }
+
+    improvedTypeDetect();
+    updateScoresAfterSmoothFix();
+
+    if(FB("status")) FB("status").textContent="v5.6 — correction douce sans carrés prête.";
+  },900);
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v5.7 — Clean Pro UI */
+(function(){
+  const FB=id=>document.getElementById(id);
+
+  setTimeout(()=>{
+    const toggle=FB("proToolsToggleBtn");
+    const panel=FB("proToolsPanel");
+    if(toggle && panel){
+      toggle.onclick=()=>{
+        panel.classList.toggle("show");
+        toggle.textContent = panel.classList.contains("show") ? "🧰 Fermer outils" : "🧰 Outils Pro";
+      };
+    }
+
+    // Hide confusing tools by default: overlays are controlled from the Pro drawer now.
+    if(FB("status")) FB("status").textContent="v5.7 — interface simplifiée, outils avancés rangés.";
+
+    // Make top zoom labels honest: these buttons control result preview unless Sync is checked.
+    const sync=FB("syncZoom");
+    if(sync) sync.checked=false;
+  },500);
+})();
+</script>
+
+
+<script>
+(function(){
+  const FB = id => document.getElementById(id);
+
+  async function toggleFullscreen(){
+    try{
+      if(!document.fullscreenElement){
+        const target = document.documentElement;
+        if(target.requestFullscreen) await target.requestFullscreen();
+        else if(target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+        else if(target.msRequestFullscreen) target.msRequestFullscreen();
+      }else{
+        if(document.exitFullscreen) await document.exitFullscreen();
+        else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+        else if(document.msExitFullscreen) document.msExitFullscreen();
+      }
+      const b = FB("fsBtn");
+      if(b) b.textContent = document.fullscreenElement ? "Quitter plein écran" : "Plein écran";
+    }catch(err){
+      alert("Le plein écran a été bloqué par le navigateur. Clique directement sur Plein écran, ou ouvre le fichier dans Chrome/Edge.");
+    }
+  }
+
+  function wireFullscreen(){
+    const old = FB("fsBtn");
+    if(!old || old.dataset.fullscreenFixed === "1") return;
+    const btn = old.cloneNode(true);
+    old.parentNode.replaceChild(btn, old);
+    btn.id = "fsBtn";
+    btn.dataset.fullscreenFixed = "1";
+    btn.textContent = document.fullscreenElement ? "Quitter plein écran" : "Plein écran";
+    btn.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      toggleFullscreen();
+    }, {capture:true});
+  }
+
+  document.addEventListener("fullscreenchange", ()=>{
+    const b = FB("fsBtn");
+    if(b) b.textContent = document.fullscreenElement ? "Quitter plein écran" : "Plein écran";
+  });
+
+  setTimeout(wireFullscreen, 300);
+  setTimeout(wireFullscreen, 1000);
+  setTimeout(wireFullscreen, 2000);
+})();
+</script>
+
+
+
+<script>
+/* ForgeBurn v5.9 — Preview camera persistence fix
+   Corrige le bug fatigant: changer une option d'image ne remet plus
+   le zoom/scroll du preview résultat à zéro. Le reset reste permis seulement
+   par le bouton Reset résultat ou lors d'un nouvel import/projet.
+*/
+(function(){
+  const FB = id => document.getElementById(id);
+
+  function getHolders(){
+    const h = document.querySelectorAll('.previewArea .canvasHolder');
+    return { original:h[0] || null, result:h[1] || null };
+  }
+
+  function getCanvasZoom(canvas){
+    if(!canvas || !canvas.width) return 1;
+    const styledWidth = parseFloat(canvas.style.width || '');
+    if(!styledWidth || !isFinite(styledWidth)) return 1;
+    return Math.max(0.08, Math.min(12, styledWidth / canvas.width));
+  }
+
+  function captureCamera(){
+    const h = getHolders();
+    const oc = FB('originalCanvas');
+    const pc = FB('processedCanvas');
+    return {
+      original:{
+        zoom:getCanvasZoom(oc),
+        scrollLeft:h.original ? h.original.scrollLeft : 0,
+        scrollTop:h.original ? h.original.scrollTop : 0
+      },
+      result:{
+        zoom:getCanvasZoom(pc),
+        scrollLeft:h.result ? h.result.scrollLeft : 0,
+        scrollTop:h.result ? h.result.scrollTop : 0
+      }
+    };
+  }
+
+  function applyCanvasZoom(canvas, zoom, labelId){
+    if(!canvas || !canvas.width) return;
+    const z = Math.max(0.08, Math.min(12, zoom || 1));
+    canvas.style.width = Math.max(1, Math.round(canvas.width * z)) + 'px';
+    canvas.style.height = Math.max(1, Math.round(canvas.height * z)) + 'px';
+    const label = FB(labelId);
+    if(label) label.textContent = Math.round(z * 100) + '%';
+  }
+
+  function restoreCamera(cam){
+    if(!cam) return;
+    const h = getHolders();
+    applyCanvasZoom(FB('originalCanvas'), cam.original.zoom, 'zoomInfo1');
+    applyCanvasZoom(FB('processedCanvas'), cam.result.zoom, 'zoomInfo2');
+
+    if(h.original){
+      h.original.scrollLeft = cam.original.scrollLeft;
+      h.original.scrollTop = cam.original.scrollTop;
+    }
+    if(h.result){
+      h.result.scrollLeft = cam.result.scrollLeft;
+      h.result.scrollTop = cam.result.scrollTop;
+    }
+
+    // Recolle les overlays au canvas résultat après un redraw/resize.
+    const pc = FB('processedCanvas');
+    if(pc){
+      ['heatmapOverlayCanvas','clogOverlayCanvas','burnOverlayCanvas','detailOverlayCanvas'].forEach(id=>{
+        const overlay = FB(id);
+        if(!overlay) return;
+        overlay.style.left = pc.offsetLeft + 'px';
+        overlay.style.top = pc.offsetTop + 'px';
+        overlay.style.width = pc.style.width || (pc.width + 'px');
+        overlay.style.height = pc.style.height || (pc.height + 'px');
+      });
+    }
+  }
+
+  function preserveAround(fn){
+    const cam = captureCamera();
+    const result = fn();
+    restoreCamera(cam);
+    requestAnimationFrame(()=>restoreCamera(cam));
+    setTimeout(()=>restoreCamera(cam), 30);
+    setTimeout(()=>restoreCamera(cam), 120);
+    return result;
+  }
+
+  function patchProcess(){
+    if(typeof window.process === 'function' && !window.__previewCameraPersistenceV59){
+      const oldProcess = window.process;
+      window.process = function(){
+        return preserveAround(()=>oldProcess.apply(this, arguments));
+      };
+      window.__previewCameraPersistenceV59 = true;
+    }
+  }
+
+  function patchOptionClicks(){
+    const selectors = [
+      '#materialPills .pill',
+      '#styleModes .modeBtn',
+      '#processingPresets .modeBtn',
+      '[data-dither-preset]'
+    ];
+    document.querySelectorAll(selectors.join(',')).forEach(el=>{
+      if(el.dataset.cameraKeepV59 === '1') return;
+      el.dataset.cameraKeepV59 = '1';
+      el.addEventListener('click', ()=>{
+        const cam = captureCamera();
+        setTimeout(()=>restoreCamera(cam), 0);
+        setTimeout(()=>restoreCamera(cam), 60);
+        setTimeout(()=>restoreCamera(cam), 160);
+      }, {capture:true});
+    });
+  }
+
+  function patchControls(){
+    const ids = ['brightness','contrast','gamma','sharpen','threshold','clarity','dither','invert','mirror','shadowLift','highlightProtect','laserBalance','bgReduce','cleanup','materialComp','grainComp','dotLoss','edge','lineSpacing','connectStrength','lineAngle','ditherOptionsActive','ditherPpi','ditherForce','globalDotSpacing','shadowDensity','lightScatter','antiClog','deepBlack','lightClean','detailProtect','smoothFix','overlayHeatmap','overlayClog','overlayDetailMap','overlayBurn'];
+    ids.forEach(id=>{
+      const el = FB(id);
+      if(!el || el.dataset.cameraKeepV59 === '1') return;
+      el.dataset.cameraKeepV59 = '1';
+      const save = ()=>{
+        const cam = captureCamera();
+        setTimeout(()=>restoreCamera(cam), 80);
+        setTimeout(()=>restoreCamera(cam), 180);
+      };
+      el.addEventListener('input', save, {capture:true});
+      el.addEventListener('change', save, {capture:true});
+    });
+  }
+
+  function install(){
+    patchProcess();
+    patchOptionClicks();
+    patchControls();
+    const sync = FB('syncZoom');
+    if(sync) sync.checked = false;
+    const status = FB('status');
+    if(status) status.textContent = 'v5.9 — preview stable: zoom et position conservés quand tu changes une option.';
+  }
+
+  setTimeout(install, 300);
+  setTimeout(install, 1200);
+  setTimeout(install, 2500);
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v5.10 — HARD Zoom/Pan Fix
+   - Zoom Original et Résultat 100% indépendants quand Sync zoom est OFF.
+   - Le preview résultat garde son zoom ET sa position après chaque option.
+   - Neutralise les anciens listeners de zoom empilés qui causaient les resets.
+*/
+(function(){
+  const FB = id => document.getElementById(id);
+  let cams = {
+    original:{ zoom:1, scrollLeft:0, scrollTop:0 },
+    result:{ zoom:1, scrollLeft:0, scrollTop:0 }
+  };
+  let installed = false;
+  let restoring = false;
+
+  function holders(){
+    const h = document.querySelectorAll('.previewArea .canvasHolder');
+    return { original:h[0] || null, result:h[1] || null };
+  }
+  function canvas(side){ return side === 'original' ? FB('originalCanvas') : FB('processedCanvas'); }
+  function label(side){ return side === 'original' ? FB('zoomInfo1') : FB('zoomInfo2'); }
+  function syncOn(){ const s = FB('syncZoom'); return !!(s && s.checked); }
+
+  function readZoom(side){
+    const c = canvas(side);
+    if(!c || !c.width) return cams[side].zoom || 1;
+    const sw = parseFloat(c.style.width || '');
+    if(!sw || !isFinite(sw)) return cams[side].zoom || 1;
+    return Math.max(.08, Math.min(12, sw / c.width));
+  }
+
+  function remember(){
+    const h = holders();
+    ['original','result'].forEach(side=>{
+      const holder = h[side];
+      cams[side].zoom = readZoom(side);
+      if(holder){
+        cams[side].scrollLeft = holder.scrollLeft;
+        cams[side].scrollTop = holder.scrollTop;
+      }
+    });
+    return JSON.parse(JSON.stringify(cams));
+  }
+
+  function applyZoom(side, z){
+    const c = canvas(side);
+    if(!c || !c.width) return;
+    z = Math.max(.08, Math.min(12, z || 1));
+    cams[side].zoom = z;
+    c.style.width = Math.max(1, Math.round(c.width * z)) + 'px';
+    c.style.height = Math.max(1, Math.round(c.height * z)) + 'px';
+    const l = label(side);
+    if(l) l.textContent = Math.round(z * 100) + '%';
+    if(side === 'result') updateResultOverlays();
+  }
+
+  function restore(saved){
+    if(!saved) return;
+    restoring = true;
+    cams = JSON.parse(JSON.stringify(saved));
+    applyZoom('original', cams.original.zoom);
+    applyZoom('result', cams.result.zoom);
+    const h = holders();
+    ['original','result'].forEach(side=>{
+      const holder = h[side];
+      if(holder){
+        holder.scrollLeft = cams[side].scrollLeft;
+        holder.scrollTop = cams[side].scrollTop;
+      }
+    });
+    updateResultOverlays();
+    restoring = false;
+  }
+
+  function restoreSeveral(saved){
+    restore(saved);
+    requestAnimationFrame(()=>restore(saved));
+    setTimeout(()=>restore(saved), 40);
+    setTimeout(()=>restore(saved), 140);
+    setTimeout(()=>restore(saved), 320);
+  }
+
+  function zoomAt(side, nextZoom, clientX, clientY){
+    const h = holders()[side];
+    const c = canvas(side);
+    if(!h || !c) return;
+    const old = cams[side].zoom || readZoom(side) || 1;
+    nextZoom = Math.max(.08, Math.min(12, nextZoom));
+    const rect = h.getBoundingClientRect();
+    const localX = (clientX == null ? rect.left + rect.width/2 : clientX) - rect.left;
+    const localY = (clientY == null ? rect.top + rect.height/2 : clientY) - rect.top;
+    const mx = localX + h.scrollLeft;
+    const my = localY + h.scrollTop;
+    applyZoom(side, nextZoom);
+    const ratio = nextZoom / old;
+    h.scrollLeft = mx * ratio - localX;
+    h.scrollTop = my * ratio - localY;
+    remember();
+  }
+
+  function setSideZoom(side, z){
+    if(syncOn()){
+      zoomAt('original', z);
+      zoomAt('result', z);
+    }else{
+      zoomAt(side, z);
+    }
+  }
+
+  function updateResultOverlays(){
+    const pc = canvas('result');
+    if(!pc) return;
+    ['heatmapOverlayCanvas','clogOverlayCanvas','burnOverlayCanvas','detailOverlayCanvas'].forEach(id=>{
+      const o = FB(id);
+      if(!o) return;
+      o.style.left = pc.offsetLeft + 'px';
+      o.style.top = pc.offsetTop + 'px';
+      o.style.width = pc.style.width || pc.width + 'px';
+      o.style.height = pc.style.height || pc.height + 'px';
+    });
+  }
+
+  function replaceHolder(side){
+    const h = holders()[side];
+    if(!h || h.dataset.v510Clean === '1') return h;
+    const fresh = document.createElement('div');
+    fresh.className = h.className;
+    fresh.id = h.id || '';
+    fresh.style.cssText = h.style.cssText;
+    fresh.dataset.v510Clean = '1';
+    while(h.firstChild) fresh.appendChild(h.firstChild);
+    h.parentNode.replaceChild(fresh, h);
+    return fresh;
+  }
+
+  function wireHolder(side){
+    const h = replaceHolder(side);
+    if(!h || h.dataset.v510Wired === '1') return;
+    h.dataset.v510Wired = '1';
+    h.addEventListener('wheel', e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      const current = cams[side].zoom || readZoom(side) || 1;
+      const next = current * (e.deltaY < 0 ? 1.12 : .89);
+      if(syncOn()){
+        zoomAt('original', next, e.clientX, e.clientY);
+        zoomAt('result', next, e.clientX, e.clientY);
+      }else{
+        zoomAt(side, next, e.clientX, e.clientY);
+      }
+    }, {passive:false, capture:true});
+
+    let drag=false, sx=0, sy=0, sl=0, st=0;
+    h.addEventListener('mousedown', e=>{
+      drag=true; sx=e.pageX; sy=e.pageY; sl=h.scrollLeft; st=h.scrollTop;
+      h.style.cursor='grabbing';
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }, true);
+    window.addEventListener('mouseup', ()=>{ drag=false; h.style.cursor='grab'; }, true);
+    h.addEventListener('mousemove', e=>{
+      if(!drag) return;
+      h.scrollLeft = sl - (e.pageX - sx);
+      h.scrollTop = st - (e.pageY - sy);
+      remember();
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+    }, true);
+    h.addEventListener('scroll', ()=>{ if(!restoring) remember(); }, {passive:true});
+  }
+
+  function cleanButton(id, handler){
+    const old = FB(id);
+    if(!old) return;
+    const b = old.cloneNode(true);
+    old.parentNode.replaceChild(b, old);
+    b.id = id;
+    b.addEventListener('click', e=>{
+      e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+      handler();
+    }, true);
+  }
+
+  function wireButtons(){
+    cleanButton('origZoomInBtn', ()=>setSideZoom('original', (cams.original.zoom||1)*1.2));
+    cleanButton('origZoomOutBtn', ()=>setSideZoom('original', (cams.original.zoom||1)*.82));
+    cleanButton('origZoomResetBtn', ()=>setSideZoom('original', 1));
+    cleanButton('procZoomInBtn', ()=>setSideZoom('result', (cams.result.zoom||1)*1.2));
+    cleanButton('procZoomOutBtn', ()=>setSideZoom('result', (cams.result.zoom||1)*.82));
+    cleanButton('procZoomResetBtn', ()=>setSideZoom('result', 1));
+    cleanButton('zoomInBtn', ()=>setSideZoom('result', (cams.result.zoom||1)*1.2));
+    cleanButton('zoomOutBtn', ()=>setSideZoom('result', (cams.result.zoom||1)*.82));
+    cleanButton('zoomFitBtn', ()=>{
+      if(syncOn()){
+        cams.original={zoom:1,scrollLeft:0,scrollTop:0};
+        cams.result={zoom:1,scrollLeft:0,scrollTop:0};
+      }else{
+        cams.result={zoom:1,scrollLeft:0,scrollTop:0};
+      }
+      restore(cams);
+    });
+  }
+
+  function patchRenderFunctions(){
+    if(typeof window.process === 'function' && !window.__v510HardCameraProcess){
+      const old = window.process;
+      window.process = function(){
+        const saved = remember();
+        const r = old.apply(this, arguments);
+        restoreSeveral(saved);
+        return r;
+      };
+      window.__v510HardCameraProcess = true;
+    }
+    if(typeof window.liveRender === 'function' && !window.__v510HardCameraLive){
+      const old = window.liveRender;
+      window.liveRender = function(){
+        const saved = remember();
+        const r = old.apply(this, arguments);
+        restoreSeveral(saved);
+        return r;
+      };
+      window.__v510HardCameraLive = true;
+    }
+  }
+
+  function patchOptionEvents(){
+    const selector = [
+      '#materialPills .pill', '#styleModes .modeBtn', '#processingPresets .modeBtn',
+      '[data-dither-preset]', 'input', 'select'
+    ].join(',');
+    document.querySelectorAll(selector).forEach(el=>{
+      if(el.dataset.v510KeepCamera === '1') return;
+      el.dataset.v510KeepCamera = '1';
+      const keep = ()=>{
+        const saved = remember();
+        setTimeout(()=>restoreSeveral(saved), 0);
+      };
+      el.addEventListener('input', keep, true);
+      el.addEventListener('change', keep, true);
+      el.addEventListener('click', keep, true);
+    });
+  }
+
+  function exposeCompat(){
+    try{
+      window.applyZoom = function(){ restore(cams); };
+      Object.defineProperty(window, 'zoomLevel', {
+        configurable:true,
+        get(){ return cams.result.zoom; },
+        set(v){ cams.result.zoom = Math.max(.08, Math.min(12, Number(v)||1)); applyZoom('result', cams.result.zoom); }
+      });
+    }catch(e){}
+  }
+
+  function install(){
+    wireHolder('original');
+    wireHolder('result');
+    remember();
+    wireButtons();
+    patchRenderFunctions();
+    patchOptionEvents();
+    exposeCompat();
+    const s = FB('syncZoom');
+    if(s) s.checked = false;
+    const st = FB('status');
+    if(st) st.textContent = 'v5.10 — zoom corrigé: original/résultat séparés et position conservée après chaque option.';
+    installed = true;
+  }
+
+  setTimeout(install, 50);
+  setTimeout(()=>{ if(!installed) install(); patchRenderFunctions(); patchOptionEvents(); }, 600);
+  setTimeout(()=>{ patchRenderFunctions(); patchOptionEvents(); remember(); restore(cams); }, 1600);
+})();
+</script>
+
+
+<script>
+/* ForgeBurn v5.11 — organisation UI sans doublons */
+(function(){
+  const FB=id=>document.getElementById(id);
+  setTimeout(()=>{
+    const pro=FB('proToolsPanel');
+    if(pro) pro.classList.add('show');
+    const toggle=FB('proToolsToggleBtn');
+    if(toggle){ toggle.style.display='none'; toggle.onclick=null; }
+    const status=FB('status');
+    if(status) status.textContent='v5.11 — interface nettoyée: réglages regroupés, actions non doublées.';
+  },1200);
+})();
+</script>
+
+
+<style>
+/* ForgeBurn v5.12 — Dithering intégré, sans gros carré séparé */
+#ditherOptionsBox{
+  margin:8px 0 4px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#ditherOptionsBox .ditherBoxHead{
+  margin:8px 0 6px!important;
+  padding:0!important;
+  color:#dcecff!important;
+  font-size:12px!important;
+  text-transform:none!important;
+  letter-spacing:0!important;
+}
+#ditherOptionsBox .ditherBoxHead span{
+  color:#dcecff!important;
+  font-weight:950!important;
+}
+#ditherOptionsBox small{
+  margin:0 0 8px!important;
+  color:#91a6bf!important;
+}
+#ditherOptionsBox .ditherMiniGrid{
+  display:flex!important;
+  gap:7px!important;
+  flex-wrap:wrap!important;
+  margin:8px 0 6px!important;
+}
+#ditherOptionsBox .ditherPreset{
+  width:auto!important;
+  border-radius:999px!important;
+  padding:7px 10px!important;
+  font-size:11px!important;
+  font-weight:900!important;
+}
+#ditherAdvancedPanel{
+  margin-top:6px!important;
+  padding-left:8px!important;
+  border-left:2px solid #263a55!important;
+}
+#ditherAdvancedPanel.hidden{display:none!important}
+</style>
+
+<script>
+/* ForgeBurn v5.12 — Le dithering avancé devient une sous-option logique du moteur de rendu. */
+(function(){
+  const FB=id=>document.getElementById(id);
+  function relabel(){
+    const box=FB('ditherOptionsBox');
+    if(!box) return;
+    const title=box.querySelector('.ditherBoxHead span');
+    if(title) title.textContent='Affinage des points laser';
+    const small=box.querySelector('small');
+    if(small) small.textContent='Optionnel : ajuste la densité des points seulement si ton rendu est trop bouché, trop pâle ou trop grainé.';
+    const label=box.querySelector('.ditherBoxHead label');
+    if(label){
+      const input=FB('ditherOptionsActive');
+      label.innerHTML='';
+      if(input) label.appendChild(input);
+      label.appendChild(document.createTextNode(' Personnaliser'));
+    }
+    const names={safe:'Stable', balanced:'Équilibré', detail:'Détails', portrait:'Portrait'};
+    box.querySelectorAll('[data-dither-preset]').forEach(btn=>{
+      const key=btn.getAttribute('data-dither-preset');
+      if(names[key]) btn.textContent=names[key];
+    });
+    const status=FB('status');
+    if(status) status.textContent='v5.12 — dithering intégré au moteur de rendu, sans panneau doublon.';
+  }
+  setTimeout(relabel,50);
+  setTimeout(relabel,500);
+  setTimeout(relabel,1500);
+})();
+</script>
+
+
+
+<script>
+/* ForgeBurn v5.13 — Analyse Pro stable
+   Fix: les stats ne sont plus mises à jour par plusieurs anciens modules contradictoires.
+   Elles sont recalculées une seule fois, à partir du canvas résultat final visible. */
+(function(){
+  if(window.__FORGEBURN_V513_STATS_STABLE__) return;
+  window.__FORGEBURN_V513_STATS_STABLE__ = true;
+  const FB = id => document.getElementById(id);
+  let timer = null;
+  let lastSignature = '';
+
+  function pct(n){ return Math.max(0, Math.min(100, Math.round(n))); }
+  function setText(id, value){ const el = FB(id); if(el) el.textContent = value; }
+
+  function analyzeVisibleResult(){
+    const canvas = FB('processedCanvas');
+    if(!canvas || !canvas.width || !canvas.height) return null;
+    const ctx = canvas.getContext('2d', {willReadFrequently:true});
+    const w = canvas.width, h = canvas.height;
+    const data = ctx.getImageData(0,0,w,h).data;
+
+    // Analyse échantillonnée: rapide, stable, et assez fiable pour guider la gravure.
+    const totalPixels = w*h;
+    const step = Math.max(1, Math.floor(totalPixels / 140000));
+    let samples=0, black=0, dark=0, pale=0, white=0, mid=0, edge=0;
+
+    for(let p=0; p<totalPixels; p+=step){
+      const i=p*4;
+      const v=(data[i]+data[i+1]+data[i+2])/3;
+      samples++;
+      if(v<128) black++;
+      if(v<70) dark++;
+      if(v>228) pale++;
+      if(v>246) white++;
+      if(v>=80 && v<=210) mid++;
+
+      // Micro-détails: mesure simple de variation locale sans recalculer toute l'image.
+      const right = p+1;
+      const down = p+w;
+      if((p % w) < w-1 && right < totalPixels){
+        const j=right*4;
+        const vr=(data[j]+data[j+1]+data[j+2])/3;
+        if(Math.abs(v-vr)>38) edge++;
+      }
+      if(down < totalPixels){
+        const j=down*4;
+        const vd=(data[j]+data[j+1]+data[j+2])/3;
+        if(Math.abs(v-vd)>38) edge++;
+      }
+    }
+
+    const blackPct = black/samples*100;
+    const darkPct = dark/samples*100;
+    const palePct = pale/samples*100;
+    const whitePct = white/samples*100;
+    const midPct = mid/samples*100;
+    const edgePct = edge/Math.max(1,samples*2)*100;
+
+    const clogRisk = pct(darkPct*2.15 + Math.max(0, blackPct-36)*1.15);
+    const paleRisk = pct(Math.max(0, palePct-55)*1.55 + whitePct*.18);
+    const detailPreserve = pct(42 + edgePct*4.5 + midPct*.38 - Math.max(0, clogRisk-45)*.35 - Math.max(0, paleRisk-55)*.28);
+    const score = pct(100 - Math.abs(blackPct-30)*1.18 - clogRisk*.30 - paleRisk*.18 + Math.min(12, edgePct*1.8));
+
+    let advice = 'Rendu stable';
+    if(clogRisk >= 65) advice = 'Noirs bouchés: espacer / éclaircir';
+    else if(clogRisk >= 42) advice = 'Surveiller zones foncées';
+    else if(paleRisk >= 62) advice = 'Trop pâle: renforcer contraste';
+    else if(detailPreserve < 55) advice = 'Détails faibles: netteté/contraste';
+    else if(score >= 78) advice = 'Bon pour gravure';
+
+    return {
+      signature: [w,h,Math.round(blackPct),Math.round(darkPct),Math.round(palePct),Math.round(edgePct*10)].join('|'),
+      blackPct:pct(blackPct), clogRisk, paleRisk, detailPreserve, score, advice
+    };
+  }
+
+  function updateStableStats(force=false){
+    const a = analyzeVisibleResult();
+    if(!a) return;
+    if(!force && a.signature === lastSignature) return;
+    lastSignature = a.signature;
+
+    setText('statBlack', a.blackPct + '%');
+    setText('statScore', a.score + '%');
+    setText('clogRisk', a.clogRisk + '%');
+    setText('paleRisk', a.paleRisk + '%');
+    setText('engraveScore', a.score + '/100');
+    setText('detailPreserve', a.detailPreserve + '%');
+    setText('aiAdvice', a.advice);
+  }
+
+  function scheduleStableStats(){
+    clearTimeout(timer);
+    timer = setTimeout(()=>{
+      updateStableStats(true);
+      // Anciennes couches de patch peuvent écrire après process(); on reprend la main après elles.
+      setTimeout(()=>updateStableStats(true), 180);
+      setTimeout(()=>updateStableStats(true), 650);
+    }, 90);
+  }
+
+  const oldProcess = window.process;
+  if(typeof oldProcess === 'function'){
+    window.process = function(customDither=null, targetCanvas=null, updateMain=true){
+      const result = oldProcess.apply(this, arguments);
+      const target = targetCanvas || FB('processedCanvas');
+      if(updateMain !== false && target === FB('processedCanvas')) scheduleStableStats();
+      return result;
+    };
+  }
+
+  ['brightness','contrast','gamma','sharpen','threshold','clarity','dither','invert','mirror','shadowLift','highlightProtect','laserBalance','bgReduce','cleanup','materialComp','grainComp','dotLoss','ditherOptionsActive','ditherPpi','ditherForce','globalDotSpacing','shadowDensity','lightScatter','antiClog','deepBlack','lightClean'].forEach(id=>{
+    const el=FB(id);
+    if(el){
+      el.addEventListener('input', scheduleStableStats, true);
+      el.addEventListener('change', scheduleStableStats, true);
+    }
+  });
+
+  setTimeout(()=>updateStableStats(true), 500);
+  setTimeout(()=>updateStableStats(true), 1500);
+})();
+</script>
+
+</body>
+</html>
